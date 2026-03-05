@@ -1,0 +1,40 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+  background: #0f0f1a;
+  color: #fff;
+  min-height: 100vh;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #0a0a14;
+}
+::-webkit-scrollbar-thumb {
+  background: #1e1e3a;
+  border-radius: 3px;
+}
+
+input, select, button {
+  font-family: inherit;
+}
+
+a {
+  color: inherit;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+.career-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+}
