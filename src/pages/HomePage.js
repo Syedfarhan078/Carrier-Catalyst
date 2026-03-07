@@ -1,5 +1,6 @@
 import CAREERS from "../data/careers";
 import { useNavigate } from "react-router-dom";
+import { MentorConnectButton } from "./HomePage";
 
 
 export default function HomePage({ navigate, user, onLogout }) {
@@ -76,6 +77,25 @@ export default function HomePage({ navigate, user, onLogout }) {
   </button>
 </div>
 
+{/* Connect Button */}
+<div style={{ textAlign: "center", marginTop: 30 }}>
+  <button
+    onClick={() => routerNavigate("/mentors")}
+    style={{
+      padding: "16px 34px",
+      fontSize: 16,
+      fontWeight: 700,
+      background: "#FF7A18",
+      border: "none",
+      borderRadius: 12,
+      color: "#fff",
+      cursor: "pointer",
+      boxShadow: "0 8px 24px rgba(0,0,0,0.4)"
+    }}
+  >
+    🤝 Connect With Industry Mentors
+  </button>
+</div>
 
       
       {/* Stats bar */}

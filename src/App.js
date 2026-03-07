@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useState } from "react";
 import { AuthProvider, useAuth } from "./context/AuthContext";
+import MentorConnect from './pages/MentorConnect';
 
 import AuthPage from "./pages/AuthPage";
 import HomePage from "./pages/HomePage";
@@ -46,11 +47,13 @@ function AppInner() {
             />
           ) : (
             <HomePage navigate={navigate} user={user} onLogout={handleLogout} />
+            
           )
         }
       />
 
       <Route path="/assessment" element={<AssessmentPage />} />
+      <Route path="/mentors" element={<MentorConnect />} />
     </Routes>
   );
 }
