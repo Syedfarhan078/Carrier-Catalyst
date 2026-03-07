@@ -1,6 +1,7 @@
 import CAREERS from "../data/careers";
 import { useNavigate } from "react-router-dom";
 import { MentorConnectButton } from "./HomePage";
+import ResumeAnalyzerButton from "../components/ResumeAnalyzerButton";
 
 
 export default function HomePage({ navigate, user, onLogout }) {
@@ -97,6 +98,7 @@ export default function HomePage({ navigate, user, onLogout }) {
   </button>
 </div>
 
+<ResumeAnalyzerButton />
       
       {/* Stats bar */}
       <div style={s.statsBar}>

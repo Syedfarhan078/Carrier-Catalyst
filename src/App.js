@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useState } from "react";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import MentorConnect from './pages/MentorConnect';
+import ResumeAnalyzer from "./pages/ResumeAnalyzer";
 
 import AuthPage from "./pages/AuthPage";
 import HomePage from "./pages/HomePage";
@@ -54,6 +55,7 @@ function AppInner() {
 
       <Route path="/assessment" element={<AssessmentPage />} />
       <Route path="/mentors" element={<MentorConnect />} />
+      <Route path="/resume-analyzer" element={<ResumeAnalyzer />} />
     </Routes>
   );
 }
