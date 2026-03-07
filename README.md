@@ -1,4 +1,4 @@
-# 🎯 SkillPath — AI-Powered Smart Career Path Recommendation System
+# 🎯 Carrer Catalyst— AI-Powered Smart Career Path Recommendation System
 
 > Converted from HTML/CSS/JavaScript → **React + SQL (localStorage-backed)**
 
