@@ -1,6 +1,7 @@
 import CAREERS from "../data/careers";
 import PageHeader from "../components/PageHeader";
 
+
 const LEVEL_COLORS = {
   Beginner:       "#22c55e",
   Intermediate:   "#f59e0b",
@@ -12,14 +13,14 @@ const LEVEL_COLORS = {
 };
 
 export default function CoursesPage({ career }) {
-  const c = CAREERS[career];
+  const c = CAREERS[career] || Object.values(CAREERS)[0];
 
   return (
     <div style={s.page}>
-      <PageHeader icon="📚" title="Curated Courses" sub="Hand-picked courses to accelerate your learning" color={c.color} />
+      <PageHeader icon="📚" title="Curated Courses" sub="Hand-picked courses to accelerate your learning" color={c?.color || "#6C63FF"} />
 
       <div style={s.grid}>
-        {c.courses.map((course, i) => {
+        {c?.courses?.map((course, i) => {
           const lvlColor = LEVEL_COLORS[course.level] || "#888";
           return (
             <div key={i} style={s.card}>
