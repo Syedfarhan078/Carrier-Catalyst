@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import DB from "../data/db";
-import styles from "../styles/global.css";
 
 export default function AuthPage() {
   const { login } = useAuth();

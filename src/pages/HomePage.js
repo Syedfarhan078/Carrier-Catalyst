@@ -1,7 +1,6 @@
 import CAREERS from "../data/careers";
 import "../styles/Homepage.css";
 import { useNavigate } from "react-router-dom";
-import { MentorConnectButton } from "./HomePage";
 import ResumeAnalyzerButton from "../components/ResumeAnalyzerButton";
 
 import Navbar from "../components/ui/Navbar";

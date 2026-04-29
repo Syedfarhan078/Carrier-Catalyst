@@ -1,10 +1,14 @@
 import CAREERS from "../data/careers";
-import RoadmapPage   from "../pages/RoadmapPage";
-import CoursesPage   from "../pages/CoursesPage";
-import YouTubePage   from "../pages/YouTubePage";
-import InterviewPage from "../pages/InterviewPage";
-import PlannerPage   from "../pages/PlannerPage";
-import ProgressPage  from "../pages/ProgressPage";
+import { lazy, Suspense } from "react";
+import LoadingSpinner from "./ui/LoadingSpinner";
+
+// ──── Lazy-loaded Career Pages (Code Splitting) ────
+const RoadmapPage = lazy(() => import("../pages/RoadmapPage"));
+const CoursesPage = lazy(() => import("../pages/CoursesPage"));
+const YouTubePage = lazy(() => import("../pages/YouTubePage"));
+const InterviewPage = lazy(() => import("../pages/InterviewPage"));
+const PlannerPage = lazy(() => import("../pages/PlannerPage"));
+const ProgressPage = lazy(() => import("../pages/ProgressPage"));
 
 const TABS = [
   { id: "roadmap",   label: "🗺",  text: "Roadmap"   },
@@ -61,12 +65,12 @@ export default function CareerLayout({ career, page, navigate, user, onLogout })
 
       {/* Main content */}
       <main style={s.main}>
-        {page === "roadmap"   && <RoadmapPage   career={career} user={user} />}
-        {page === "courses"   && <CoursesPage   career={career} />}
-        {page === "youtube"   && <YouTubePage   career={career} />}
-        {page === "interview" && <InterviewPage career={career} />}
-        {page === "planner"   && <PlannerPage   career={career} user={user} />}
-        {page === "progress"  && <ProgressPage  career={career} user={user} />}
+        {page === "roadmap"   && <Suspense fallback={<LoadingSpinner />}><RoadmapPage   career={career} user={user} /></Suspense>}
+        {page === "courses"   && <Suspense fallback={<LoadingSpinner />}><CoursesPage   career={career} /></Suspense>}
+        {page === "youtube"   && <Suspense fallback={<LoadingSpinner />}><YouTubePage   career={career} /></Suspense>}
+        {page === "interview" && <Suspense fallback={<LoadingSpinner />}><InterviewPage career={career} /></Suspense>}
+        {page === "planner"   && <Suspense fallback={<LoadingSpinner />}><PlannerPage   career={career} user={user} /></Suspense>}
+        {page === "progress"  && <Suspense fallback={<LoadingSpinner />}><ProgressPage  career={career} user={user} /></Suspense>}
       </main>
     </div>
   );

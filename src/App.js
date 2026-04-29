@@ -1,24 +1,26 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, lazy, Suspense } from "react";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import { useLocation } from "react-router-dom";
-import CareerSelectPage from "./pages/CareerSelectPage";
-// import MentorConnect from './pages/MentorConnect';
-import ResumeAnalyzer from "./pages/ResumeAnalyzer";
-
-import MentorListPage from "./pages/MentorListPage";
-import MentorProfilePage from "./pages/MentorProfilePage";
-import BookingPage from "./pages/BookingPage";
-
-import AuthPage from "./pages/AuthPage";
-import HomePage from "./pages/HomePage";
-import CareerLayout from "./components/CareerLayout";
-import AssessmentPage from "./components/assessment/AssessmentPage";
-
-import CoursesPage from "./pages/CoursesPage";
-import RoadmapPage from "./pages/RoadmapPage";
+import LoadingSpinner from "./components/ui/LoadingSpinner";
 
 import DB from "./data/db";
+
+// ──── Lazy-loaded Pages (Code Splitting) ────
+// Each page is loaded on-demand, reducing initial bundle size
+const AuthPage = lazy(() => import("./pages/AuthPage"));
+const HomePage = lazy(() => import("./pages/HomePage"));
+const CareerSelectPage = lazy(() => import("./pages/CareerSelectPage"));
+const ResumeAnalyzer = lazy(() => import("./pages/ResumeAnalyzer"));
+const MentorListPage = lazy(() => import("./pages/MentorListPage"));
+const MentorProfilePage = lazy(() => import("./pages/MentorProfilePage"));
+const BookingPage = lazy(() => import("./pages/BookingPage"));
+const CoursesPage = lazy(() => import("./pages/CoursesPage"));
+const RoadmapPage = lazy(() => import("./pages/RoadmapPage"));
+
+// ──── Lazy-loaded Components ────
+const CareerLayout = lazy(() => import("./components/CareerLayout"));
+const AssessmentPage = lazy(() => import("./components/assessment/AssessmentPage"));
 
 function AppInner() {
   const location = useLocation();
@@ -48,42 +50,82 @@ useEffect(() => {
     setCareer(null);
   };
 
-  if (!user) return <AuthPage />;
+  if (!user) return (
+    <Suspense fallback={<LoadingSpinner />}>
+      <AuthPage />
+    </Suspense>
+  );
 
   return (
-
     <Routes>
       <Route
         path="/"
         element={
           career && page !== "home" ? (
-            <CareerLayout
-              career={career}
-              page={page}
-              navigate={navigate}
-              user={user}
-              onLogout={handleLogout}
-            />
+            <Suspense fallback={<LoadingSpinner />}>
+              <CareerLayout
+                career={career}
+                page={page}
+                navigate={navigate}
+                user={user}
+                onLogout={handleLogout}
+              />
+            </Suspense>
           ) : (
-            <HomePage navigate={navigate} user={user} onLogout={handleLogout} />
-            
+            <Suspense fallback={<LoadingSpinner />}>
+              <HomePage navigate={navigate} user={user} onLogout={handleLogout} />
+            </Suspense>
           )
         }
       />
 
-      <Route path="/assessment" element={<AssessmentPage />} />
-      {/* <Route path="/mentors" element={<MentorConnect />} /> */}
-      <Route path="/resume-analyzer" element={<ResumeAnalyzer />} />
+      <Route path="/assessment" element={
+        <Suspense fallback={<LoadingSpinner />}>
+          <AssessmentPage />
+        </Suspense>
+      } />
 
-      <Route path="/mentors" element={<MentorListPage />} />
-      <Route path="/mentor/:id" element={<MentorProfilePage />} />
-      <Route path="/booking/:id" element={<BookingPage />} />
+      <Route path="/resume-analyzer" element={
+        <Suspense fallback={<LoadingSpinner />}>
+          <ResumeAnalyzer />
+        </Suspense>
+      } />
 
-      <Route path="/courses" element={<CoursesPage />} />
-      <Route path="/roadmap" element={<RoadmapPage />} />
+      <Route path="/mentors" element={
+        <Suspense fallback={<LoadingSpinner />}>
+          <MentorListPage />
+        </Suspense>
+      } />
 
-      <Route path="/select-career" element={<CareerSelectPage />} />
+      <Route path="/mentor/:id" element={
+        <Suspense fallback={<LoadingSpinner />}>
+          <MentorProfilePage />
+        </Suspense>
+      } />
 
+      <Route path="/booking/:id" element={
+        <Suspense fallback={<LoadingSpinner />}>
+          <BookingPage />
+        </Suspense>
+      } />
+
+      <Route path="/courses" element={
+        <Suspense fallback={<LoadingSpinner />}>
+          <CoursesPage />
+        </Suspense>
+      } />
+
+      <Route path="/roadmap" element={
+        <Suspense fallback={<LoadingSpinner />}>
+          <RoadmapPage />
+        </Suspense>
+      } />
+
+      <Route path="/select-career" element={
+        <Suspense fallback={<LoadingSpinner />}>
+          <CareerSelectPage />
+        </Suspense>
+      } />
     </Routes>
   );
 }
