@@ -2,8 +2,9 @@
 // MentorCard.js — Reusable card component for mentor listing
 // ─────────────────────────────────────────────────────────────
 
-import React from "react";
+import React, { Suspense, lazy } from "react";
 import { useNavigate } from "react-router-dom";
+const Rotating3DCard = lazy(() => import("./3d/Rotating3DCard"));
 
 const MentorCard = ({ mentor }) => {
   const navigate = useNavigate();
@@ -18,27 +19,31 @@ const MentorCard = ({ mentor }) => {
   };
 
   return (
-    <div
-      style={{
+    <Suspense fallback={
+      <div style={{
         background: "linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%)",
         border: "1px solid rgba(255,255,255,0.1)",
         borderRadius: "16px",
-        padding: "24px",
-        transition: "all 0.3s ease",
-        cursor: "pointer",
-        position: "relative",
-        overflow: "hidden",
-      }}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.transform = "translateY(-4px) scale(1.01)";
-        e.currentTarget.style.boxShadow = "0 20px 40px rgba(124, 58, 237, 0.25)";
-        e.currentTarget.style.borderColor = "rgba(124, 58, 237, 0.5)";
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.transform = "translateY(0) scale(1)";
-        e.currentTarget.style.boxShadow = "none";
-        e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)";
-      }}
+        padding: "20px",
+        minHeight: "220px",
+      }} />
+    }>
+      <Rotating3DCard>
+        <div
+          style={{
+            background: "linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%)",
+            border: "1px solid rgba(255,255,255,0.1)",
+            borderRadius: "16px",
+            padding: "20px",
+            cursor: "pointer",
+            position: "relative",
+            overflow: "hidden",
+            display: "flex",
+            flexDirection: "column",
+            gap: "12px",
+            alignItems: "stretch",
+            justifyContent: "flex-start",
+          }}
     >
       {/* Top glow accent */}
       <div style={{
@@ -170,7 +175,9 @@ const MentorCard = ({ mentor }) => {
       >
         View Profile →
       </button>
-    </div>
+        </div>
+      </Rotating3DCard>
+    </Suspense>
   );
 };
 

@@ -5,7 +5,7 @@
 }
 
 body {
-  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+  font-family: 'DM Sans', 'Inter', 'Segoe UI', system-ui, sans-serif;
   background: #0f0f1a;
   color: #fff;
   min-height: 100vh;
@@ -37,4 +37,29 @@ button:hover {
 .career-card:hover {
   transform: translateY(-4px);
   box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+}
+
+/* ── Spinner Animations (used by LoadingSpinner) ── */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes spin-reverse {
+  0% { transform: rotate(360deg); }
+  100% { transform: rotate(0deg); }
+}
+
+.cc-spin {
+  animation: spin 0.8s linear infinite;
+}
+
+.cc-spin-reverse {
+  animation: spin-reverse 1.2s linear infinite;
+}
+
+/* ── Performance: content-visibility for offscreen sections ── */
+.cc-section {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 600px;
 }

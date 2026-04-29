@@ -1,6 +1,11 @@
 import CAREERS from "../data/careers";
 import DB from "../data/db";
 import PageHeader from "../components/PageHeader";
+import { Suspense, lazy } from "react";
+import "../styles/advancedCareer.css";
+import { TrendingUpIcon, CheckIcon, AwardIcon } from "../components/Icons";
+
+const ProgressBar3D = lazy(() => import("../components/3d/ProgressBar3D"));
 
 export default function ProgressPage({ career, user }) {
   const c = CAREERS[career];
@@ -14,116 +19,263 @@ export default function ProgressPage({ career, user }) {
   const planDone   = plannerTasks.filter((t) => t.done).length;
 
   const stats = [
-    { label: "Roadmap Complete", value: `${pct}%`, sub: `${doneTopics} of ${allTopics.length} topics`, color: c.color },
-    { label: "Tasks Completed",  value: planDone,   sub: `of ${plannerTasks.length} planner tasks`,    color: "#22c55e" },
-    { label: "Study Sessions",   value: sessionCount, sub: "visits logged",                              color: "#f59e0b" },
-    { label: "Current Track",    value: c.icon,      sub: c.label,                                       color: c.accent },
+    { label: "Roadmap Complete", value: `${pct}%`, sub: `${doneTopics} of ${allTopics.length} topics`, color: c.color, icon: "🎯", iconComp: <TrendingUpIcon size={24} color={c.color} /> },
+    { label: "Tasks Completed",  value: planDone,   sub: `of ${plannerTasks.length} planner tasks`,    color: "#22c55e", icon: "✅", iconComp: <CheckIcon size={24} color="#22c55e" /> },
+    { label: "Study Sessions",   value: sessionCount, sub: "visits logged",                              color: "#f59e0b", icon: "📚", iconComp: <AwardIcon size={24} color="#f59e0b" /> },
+    { label: "Current Track",    value: c.icon,      sub: c.label,                                       color: c.accent, icon: "🎓", iconComp: <AwardIcon size={24} color={c.accent} /> },
   ];
 
   return (
-    <div style={s.page}>
-      <PageHeader icon="✅" title="My Progress" sub="Your learning achievements at a glance" color={c.color} />
+    <div className="advanced-container">
+      <div className="advanced-wrapper">
+        <PageHeader
+          icon="✓"
+          title="My Progress"
+          sub="Track your learning achievements, goals, and milestones"
+          color={c.color}
+        />
 
-      {/* Stat cards */}
-      <div style={s.statsGrid}>
-        {stats.map((st, i) => (
-          <div key={i} style={s.statCard}>
-            <div style={{ ...s.bigVal, color: st.color }}>{st.value}</div>
-            <div style={s.statLabel}>{st.label}</div>
-            <div style={s.statSub}>{st.sub}</div>
-          </div>
-        ))}
-      </div>
-
-      {/* Phase breakdown */}
-      <div style={s.card}>
-        <h3 style={s.sectionTitle}>Phase-by-Phase Breakdown</h3>
-        {c.roadmap.map((phase, pi) => {
-          const done = phase.steps.filter((step) =>
-            progress.find((p) => p.topic === step && p.completed)
-          ).length;
-          const phasePct = Math.round((done / phase.steps.length) * 100);
-          return (
-            <div key={pi} style={{ marginBottom: 20 }}>
-              <div style={s.phaseRow}>
-                <span style={{ color: "#ccc", fontSize: 14 }}>Phase {pi + 1}: {phase.phase}</span>
-                <span style={{ color: c.color, fontSize: 13, fontWeight: 700 }}>{done}/{phase.steps.length}</span>
+        {/* Stat cards */}
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
+          gap: "20px",
+          marginBottom: "48px",
+          animation: "fadeInUp 0.8s ease-out 0.1s both"
+        }}>
+          {stats.map((st, i) => (
+            <div
+              key={i}
+              style={{
+                background: "rgba(255,255,255,0.04)",
+                border: "1px solid rgba(99,102,241,0.2)",
+                borderRadius: "16px",
+                padding: "28px 24px",
+                textAlign: "center",
+                transition: "all var(--transition-standard)",
+                cursor: "default"
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = "rgba(99,102,241,0.12)";
+                e.currentTarget.style.borderColor = "rgba(99,102,241,0.4)";
+                e.currentTarget.style.transform = "translateY(-4px)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = "rgba(255,255,255,0.04)";
+                e.currentTarget.style.borderColor = "rgba(99,102,241,0.2)";
+                e.currentTarget.style.transform = "translateY(0)";
+              }}
+            >
+              <div style={{ fontSize: "2rem", marginBottom: "12px" }}>{st.iconComp}</div>
+              <div style={{
+                fontSize: "2.5rem",
+                fontWeight: "900",
+                color: st.color,
+                marginBottom: "12px",
+                lineHeight: "1"
+              }}>
+                {st.value}
               </div>
-              <div style={s.track}>
-                <div style={{ ...s.fill, width: `${phasePct}%`, background: c.color }} />
+              <div style={{
+                color: "#fff",
+                fontWeight: "700",
+                fontSize: "0.95rem",
+                marginBottom: "8px"
+              }}>
+                {st.label}
+              </div>
+              <div style={{
+                color: "rgba(255,255,255,0.5)",
+                fontSize: "0.85rem",
+                lineHeight: "1.4"
+              }}>
+                {st.sub}
               </div>
             </div>
-          );
-        })}
-      </div>
-
-      {/* SQL snapshot */}
-      <div style={s.card}>
-        <h3 style={s.sectionTitle}>🗄️ SQL Query — Progress Table</h3>
-        <pre style={s.codeBlock}>
-          <span style={{ color: "#7c3aed" }}>SELECT</span> topic, completed, updated_at{"\n"}
-          <span style={{ color: "#7c3aed" }}>FROM</span> progress{"\n"}
-          <span style={{ color: "#7c3aed" }}>WHERE</span> user_id = <span style={{ color: "#f59e0b" }}>{user.id}</span>{"\n"}
-          {"  "}<span style={{ color: "#7c3aed" }}>AND</span> career = <span style={{ color: "#22c55e" }}>'{career}'</span>;{"\n\n"}
-          <span style={{ color: "#22c55e" }}>→ {progress.length} row(s) returned | {doneTopics} completed</span>
-        </pre>
-      </div>
-
-      {/* Recent progress rows */}
-      {progress.length > 0 && (
-        <div style={s.card}>
-          <h3 style={s.sectionTitle}>Recent Progress Rows</h3>
-          <table style={s.table}>
-            <thead>
-              <tr>
-                {["topic", "completed", "updated_at"].map((col) => (
-                  <th key={col} style={s.th}>{col}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {progress.slice(-8).reverse().map((row, i) => (
-                <tr key={i}>
-                  <td style={s.td}>{row.topic}</td>
-                  <td style={{ ...s.td, color: row.completed ? "#22c55e" : "#ef4444" }}>
-                    {row.completed ? "TRUE" : "FALSE"}
-                  </td>
-                  <td style={{ ...s.td, color: "#555", fontSize: 11 }}>
-                    {new Date(row.updated_at).toLocaleString()}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          ))}
         </div>
-      )}
+
+        {/* 3D Progress Visualization */}
+        <div style={{
+          background: "rgba(255,255,255,0.04)",
+          border: "1px solid rgba(99,102,241,0.2)",
+          borderRadius: "16px",
+          padding: "40px 24px",
+          textAlign: "center",
+          marginBottom: "40px",
+          animation: "fadeInUp 0.8s ease-out 0.2s both"
+        }}>
+          <h3 style={{
+            color: "#fff",
+            fontSize: "1.1rem",
+            fontWeight: "800",
+            marginBottom: "28px",
+            textTransform: "uppercase",
+            letterSpacing: "1px",
+            color: "rgba(255,255,255,0.8)"
+          }}>
+            📊 Your Progress Visualization
+          </h3>
+          <Suspense fallback={
+            <div style={{
+              padding: "40px",
+              color: "#6366f1",
+              fontSize: "1rem"
+            }}>
+              Loading 3D visualization...
+            </div>
+          }>
+            <ProgressBar3D progress={pct} size={250} />
+          </Suspense>
+        </div>
+
+        {/* Phase breakdown */}
+        <div style={{
+          background: "rgba(255,255,255,0.04)",
+          border: "1px solid rgba(99,102,241,0.2)",
+          borderRadius: "16px",
+          padding: "32px",
+          marginBottom: "40px",
+          animation: "fadeInUp 0.8s ease-out 0.3s both"
+        }}>
+          <h3 style={{
+            color: "#fff",
+            fontSize: "1.1rem",
+            fontWeight: "800",
+            marginBottom: "28px",
+            textTransform: "uppercase",
+            letterSpacing: "1px",
+            color: "rgba(255,255,255,0.8)"
+          }}>
+            🎯 Phase-by-Phase Breakdown
+          </h3>
+          <div style={{ display: "grid", gap: "24px" }}>
+            {c.roadmap.map((phase, pi) => {
+              const done = phase.steps.filter((step) =>
+                progress.find((p) => p.topic === step && p.completed)
+              ).length;
+              const phasePct = Math.round((done / phase.steps.length) * 100);
+              return (
+                <div key={pi}>
+                  <div style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    marginBottom: "12px"
+                  }}>
+                    <span style={{
+                      color: "#fff",
+                      fontSize: "0.95rem",
+                      fontWeight: "600"
+                    }}>
+                      {phase.phase}
+                    </span>
+                    <span style={{
+                      color: c.color,
+                      fontSize: "0.9rem",
+                      fontWeight: "700"
+                    }}>
+                      {done}/{phase.steps.length} ({phasePct}%)
+                    </span>
+                  </div>
+                  <div style={{
+                    height: "8px",
+                    background: "rgba(255,255,255,0.08)",
+                    borderRadius: "4px",
+                    overflow: "hidden",
+                    border: "1px solid rgba(99,102,241,0.1)"
+                  }}>
+                    <div style={{
+                      height: "100%",
+                      width: `${phasePct}%`,
+                      background: `linear-gradient(90deg, ${c.color} 0%, ${c.accent} 100%)`,
+                      borderRadius: "4px",
+                      transition: "width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)",
+                      boxShadow: `0 0 8px ${c.color}80`
+                    }}
+                    />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Recent progress rows */}
+        {progress.length > 0 && (
+          <div style={{
+            background: "rgba(255,255,255,0.04)",
+            border: "1px solid rgba(99,102,241,0.2)",
+            borderRadius: "16px",
+            padding: "32px",
+            animation: "fadeInUp 0.8s ease-out 0.4s both"
+          }}>
+            <h3 style={{
+              color: "#fff",
+              fontSize: "1.1rem",
+              fontWeight: "800",
+              marginBottom: "28px",
+              textTransform: "uppercase",
+              letterSpacing: "1px",
+              color: "rgba(255,255,255,0.8)"
+            }}>
+              📋 Recent Achievements
+            </h3>
+            <div style={{
+              display: "grid",
+              gap: "12px",
+              maxHeight: "400px",
+              overflowY: "auto"
+            }}>
+              {progress.slice(-8).reverse().map((row, i) => (
+                <div
+                  key={i}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    padding: "14px 16px",
+                    background: row.completed ? "rgba(34,197,94,0.1)" : "rgba(239,68,68,0.1)",
+                    border: `1px solid ${row.completed ? "rgba(34,197,94,0.2)" : "rgba(239,68,68,0.2)"}`,
+                    borderRadius: "10px",
+                    transition: "all var(--transition-fast)"
+                  }}
+                >
+                  <span style={{
+                    color: "#fff",
+                    fontSize: "0.95rem",
+                    fontWeight: "500"
+                  }}>
+                    {row.topic}
+                  </span>
+                  <div style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "12px"
+                  }}>
+                    <span style={{
+                      color: row.completed ? "#22c55e" : "#ef4444",
+                      fontSize: "0.9rem",
+                      fontWeight: "700",
+                      padding: "4px 10px",
+                      background: row.completed ? "rgba(34,197,94,0.15)" : "rgba(239,68,68,0.15)",
+                      borderRadius: "6px"
+                    }}>
+                      {row.completed ? "✓ Done" : "⧖ Pending"}
+                    </span>
+                    <span style={{
+                      color: "rgba(255,255,255,0.4)",
+                      fontSize: "0.8rem"
+                    }}>
+                      {new Date(row.updated_at).toLocaleDateString()}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
-
-const s = {
-  page: { padding: "40px 48px", maxWidth: 960, margin: "0 auto" },
-  statsGrid: { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 16, marginBottom: 28 },
-  statCard: { background: "#12121f", border: "1px solid #1e1e2e", borderRadius: 18, padding: 26, textAlign: "center" },
-  bigVal: { fontSize: 42, fontWeight: 900, marginBottom: 8, lineHeight: 1 },
-  statLabel: { color: "#ddd", fontWeight: 700, fontSize: 14, marginBottom: 6 },
-  statSub: { color: "#555", fontSize: 12 },
-  card: { background: "#12121f", border: "1px solid #1e1e2e", borderRadius: 18, padding: 28, marginBottom: 20 },
-  sectionTitle: { color: "#888", fontSize: 12, textTransform: "uppercase", letterSpacing: 1.5, fontWeight: 700, marginBottom: 20 },
-  phaseRow: { display: "flex", justifyContent: "space-between", marginBottom: 8 },
-  track: { height: 8, background: "#1e1e2e", borderRadius: 4, overflow: "hidden" },
-  fill: { height: "100%", borderRadius: 4, transition: "width 0.5s ease" },
-  codeBlock: {
-    background: "#0a0a14",
-    borderRadius: 10,
-    padding: "18px 20px",
-    fontSize: 13,
-    lineHeight: 2,
-    color: "#ccc",
-    border: "1px solid #1a1a2e",
-    overflowX: "auto",
-  },
-  table: { width: "100%", borderCollapse: "collapse" },
-  th: { color: "#555", fontSize: 11, fontWeight: 700, textAlign: "left", padding: "8px 12px", textTransform: "uppercase", borderBottom: "1px solid #1e1e2e", letterSpacing: 1 },
-  td: { color: "#ccc", fontSize: 13, padding: "10px 12px", borderBottom: "1px solid #0f0f1a" },
-};

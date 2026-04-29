@@ -7,6 +7,43 @@ import ResultsPage from './ResultsPage';
 import { questions, assessmentConfig } from '../../data/assessmentQuestions';
 import { useNavigate } from "react-router-dom";
 
+// ─── Reusable Back Button ─────────────────────────────────────────────────────
+const BackToHomeButton = ({ label = '← Back to Home' }) => {
+  const navigate = useNavigate();
+  return (
+    <button
+      onClick={() => navigate('/')}
+      style={{
+        background: 'rgba(255,255,255,0.04)',
+        border: '1px solid rgba(255,255,255,0.1)',
+        borderRadius: '10px',
+        padding: '8px 18px',
+        color: 'rgba(255,255,255,0.45)',
+        cursor: 'pointer',
+        fontSize: '13px',
+        fontWeight: '500',
+        fontFamily: "'Outfit', sans-serif",
+        transition: 'all 0.2s ease',
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: '6px',
+      }}
+      onMouseEnter={e => {
+        e.currentTarget.style.color = '#f1f5f9';
+        e.currentTarget.style.background = 'rgba(99,102,241,0.12)';
+        e.currentTarget.style.borderColor = 'rgba(99,102,241,0.3)';
+      }}
+      onMouseLeave={e => {
+        e.currentTarget.style.color = 'rgba(255,255,255,0.45)';
+        e.currentTarget.style.background = 'rgba(255,255,255,0.04)';
+        e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)';
+      }}
+    >
+      {label}
+    </button>
+  );
+};
+
 const MAX_VIOLATIONS = 3;
 
 // ─── Pre-Assessment Lobby ───────────────────────────────────────────────────
@@ -15,11 +52,18 @@ const AssessmentLobby = ({ onStart }) => (
     minHeight: '100vh',
     background: 'linear-gradient(135deg, #0a0a14 0%, #0f0f1e 50%, #0a0a14 100%)',
     display: 'flex',
+    flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
     padding: '40px 20px',
-    fontFamily: "'Outfit', sans-serif"
+    fontFamily: "'Outfit', sans-serif",
+    position: 'relative',
   }}>
+    {/* Back Button */}
+    <div style={{ position: 'absolute', top: '24px', left: '24px' }}>
+      <BackToHomeButton />
+    </div>
+
     <div style={{ maxWidth: '600px', width: '100%', textAlign: 'center' }}>
       {/* Badge */}
       <div style={{

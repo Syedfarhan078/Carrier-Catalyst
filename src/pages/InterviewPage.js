@@ -1,88 +1,167 @@
 import { useState } from "react";
 import CAREERS from "../data/careers";
 import PageHeader from "../components/PageHeader";
+import "../styles/advancedCareer.css";
+import { BriefcaseIcon, ChevronDownIcon } from "../components/Icons";
 
 export default function InterviewPage({ career }) {
   const c = CAREERS[career];
   const [open, setOpen] = useState({});
+  const [activeCategory, setActiveCategory] = useState(0);
 
   const toggle = (key) => setOpen((prev) => ({ ...prev, [key]: !prev[key] }));
 
   return (
-    <div style={s.page}>
-      <PageHeader icon="💼" title="Interview Preparation" sub="Common questions asked in real interviews" color={c.color} />
+    <div className="advanced-container">
+      <div className="advanced-wrapper">
+        <PageHeader
+          icon="💼"
+          title="Interview Preparation"
+          sub="Real questions asked in technical interviews with expert guidance"
+          color={c.color}
+        />
 
-      {c.interview.map((cat, ci) => (
-        <div key={ci} style={s.section}>
-          <h2 style={{ ...s.catTitle, borderLeft: `4px solid ${c.color}` }}>
-            {cat.category}
-          </h2>
-          <div style={s.questions}>
-            {cat.questions.map((q, qi) => {
-              const key = `${ci}-${qi}`;
-              const isOpen = !!open[key];
-              return (
-                <div key={qi} style={s.qCard} onClick={() => toggle(key)}>
-                  <div style={s.qRow}>
-                    <span style={s.qNum}>Q{qi + 1}</span>
-                    <span style={s.qText}>{q}</span>
-                    <span style={{ color: c.color, fontSize: 12 }}>{isOpen ? "▲" : "▼"}</span>
-                  </div>
-                  {isOpen && (
-                    <div style={s.hint}>
-                      💡 <strong>Study tip:</strong> Focus on the definition, a real-world example,
-                      common edge cases, and how this concept applies to {c.label} engineering roles.
-                      Practice explaining it out loud.
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
+        {/* Category Tabs */}
+        <div style={{
+          display: "flex",
+          gap: "12px",
+          marginBottom: "40px",
+          flexWrap: "wrap",
+          animation: "fadeInDown 0.8s ease-out"
+        }}>
+          {c.interview.map((cat, ci) => (
+            <button
+              key={ci}
+              className={`filter-btn ${activeCategory === ci ? 'active' : ''}`}
+              onClick={() => setActiveCategory(ci)}
+              style={{ marginBottom: "0" }}
+            >
+              {cat.category}
+            </button>
+          ))}
         </div>
-      ))}
+
+        {/* Questions for Active Category */}
+        <div style={{ animation: "fadeInUp 0.8s ease-out 0.2s both" }}>
+          {c.interview.map((cat, ci) => {
+            if (activeCategory !== ci) return null;
+            return (
+              <div key={ci}>
+                <h2 style={{
+                  color: c.color,
+                  fontSize: "1.5rem",
+                  fontWeight: "800",
+                  marginBottom: "24px"
+                }}>
+                  {cat.category} Questions
+                </h2>
+                
+                <div style={{ display: "grid", gap: "16px" }}>
+                  {cat.questions.map((q, qi) => {
+                    const key = `${ci}-${qi}`;
+                    const isOpen = !!open[key];
+                    return (
+                      <div
+                        key={qi}
+                        onClick={() => toggle(key)}
+                        style={{
+                          background: "rgba(255,255,255,0.04)",
+                          border: `1px solid ${isOpen ? "rgba(99,102,241,0.4)" : "rgba(99,102,241,0.2)"}`,
+                          borderRadius: "16px",
+                          padding: "24px",
+                          cursor: "pointer",
+                          transition: "all var(--transition-standard)",
+                          overflow: "hidden"
+                        }}
+                        onMouseEnter={(e) => {
+                          if (!isOpen) {
+                            e.currentTarget.style.background = "rgba(99,102,241,0.08)";
+                            e.currentTarget.style.borderColor = "rgba(99,102,241,0.3)";
+                          }
+                        }}
+                        onMouseLeave={(e) => {
+                          if (!isOpen) {
+                            e.currentTarget.style.background = "rgba(255,255,255,0.04)";
+                            e.currentTarget.style.borderColor = "rgba(99,102,241,0.2)";
+                          }
+                        }}
+                      >
+                        <div style={{
+                          display: "flex",
+                          alignItems: "flex-start",
+                          gap: "16px"
+                        }}>
+                          <span style={{
+                            color: "#888",
+                            fontSize: "0.9rem",
+                            fontWeight: "700",
+                            background: "rgba(99,102,241,0.1)",
+                            padding: "6px 10px",
+                            borderRadius: "6px",
+                            flexShrink: 0,
+                            minWidth: "45px",
+                            textAlign: "center"
+                          }}>
+                            Q{qi + 1}
+                          </span>
+                          <div style={{ flex: 1 }}>
+                            <p style={{
+                              color: "#fff",
+                              fontSize: "1.05rem",
+                              fontWeight: "600",
+                              margin: "0",
+                              lineHeight: "1.6"
+                            }}>
+                              {q}
+                            </p>
+                          </div>
+                          <span style={{
+                            color: c.color,
+                            fontSize: "0.9rem",
+                            fontWeight: "700",
+                            transition: "transform var(--transition-fast)",
+                            transform: isOpen ? "rotate(180deg)" : "rotate(0)",
+                            flexShrink: 0,
+                            display: "flex",
+                            alignItems: "center"
+                          }}>
+                            <ChevronDownIcon size={18} color={c.color} />
+                          </span>
+                        </div>
+
+                        {isOpen && (
+                          <div style={{
+                            marginTop: "20px",
+                            padding: "16px",
+                            background: "rgba(99,102,241,0.1)",
+                            borderRadius: "12px",
+                            border: `1px solid rgba(99,102,241,0.2)`,
+                            animation: "slideInLeft 0.3s ease-out"
+                          }}>
+                            <div style={{
+                              color: "rgba(255,255,255,0.8)",
+                              fontSize: "0.95rem",
+                              lineHeight: "1.8"
+                            }}>
+                              <strong style={{ color: c.color }}>★ Study Tip:</strong>
+                              <p style={{ margin: "8px 0 0" }}>
+                                Focus on the definition, a real-world example, common edge cases, and how this concept applies to {c.label} engineering roles. Practice explaining it out loud and be ready to discuss related concepts.
+                              </p>
+                              <p style={{ margin: "12px 0 0", color: "rgba(255,255,255,0.6)", fontSize: "0.85rem" }}>
+                                💬 Tip: Answer with clarity, provide examples, and show your thought process. Interviewers appreciate candidates who can explain complex concepts simply.
+                              </p>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
     </div>
   );
 }
-
-const s = {
-  page: { padding: "40px 48px", maxWidth: 860, margin: "0 auto" },
-  section: { marginBottom: 40 },
-  catTitle: {
-    color: "#fff",
-    fontSize: 20,
-    fontWeight: 800,
-    paddingLeft: 16,
-    marginBottom: 16,
-  },
-  questions: { display: "flex", flexDirection: "column", gap: 8 },
-  qCard: {
-    background: "#12121f",
-    border: "1px solid #1e1e2e",
-    borderRadius: 12,
-    padding: "16px 20px",
-    cursor: "pointer",
-    transition: "border-color 0.2s",
-  },
-  qRow: { display: "flex", alignItems: "center", gap: 12 },
-  qNum: {
-    color: "#444",
-    fontSize: 11,
-    fontWeight: 700,
-    background: "#1e1e2e",
-    padding: "3px 7px",
-    borderRadius: 6,
-    flexShrink: 0,
-  },
-  qText: { color: "#ddd", fontSize: 14, flex: 1, lineHeight: 1.5 },
-  hint: {
-    marginTop: 14,
-    padding: "12px 16px",
-    background: "#0a0a14",
-    borderRadius: 10,
-    color: "#888",
-    fontSize: 13,
-    lineHeight: 1.7,
-    border: "1px solid #1a1a2e",
-  },
-};

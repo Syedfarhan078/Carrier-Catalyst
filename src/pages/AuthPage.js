@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import DB from "../data/db";
+import { validateEmail, validatePassword, validateName, validateLoginForm, validateRegistrationForm, normalizeWhitespace } from "../utils/validators";
 
 export default function AuthPage() {
   const { login } = useAuth();
@@ -8,8 +9,29 @@ export default function AuthPage() {
   const [form, setForm] = useState({ name: "", email: "", password: "" });
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [fieldErrors, setFieldErrors] = useState({});
 
-  const handle = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+  const handle = (e) => {
+    const { name, value } = e.target;
+    setForm({ ...form, [name]: value });
+    
+    // Real-time validation feedback
+    let fieldError = "";
+    if (value.trim()) {
+      if (name === "name" && mode === "register") {
+        const validation = validateName(value);
+        if (!validation.isValid) fieldError = validation.error;
+      } else if (name === "email") {
+        const validation = validateEmail(value);
+        if (!validation.isValid) fieldError = validation.error;
+      } else if (name === "password") {
+        const validation = validatePassword(value, false);
+        if (!validation.isValid) fieldError = validation.error;
+      }
+    }
+    
+    setFieldErrors({ ...fieldErrors, [name]: fieldError });
+  };
 
   const switchMode = (m) => {
     setMode(m);
@@ -22,20 +44,68 @@ export default function AuthPage() {
     setError("");
     setSuccess("");
 
-    if (!form.email || !form.password) return setError("Email and password are required.");
-
     if (mode === "register") {
-      if (!form.name.trim()) return setError("Full name is required.");
-      if (form.password.length < 6) return setError("Password must be at least 6 characters.");
-      if (DB.userExists(form.email)) return setError("Email already registered. Please sign in.");
-      DB.insertUser(form.name.trim(), form.email.trim(), form.password);
-      setSuccess("Account created successfully! You can now sign in.");
-      switchMode("login");
-      setForm(f => ({ ...f, email: form.email, password: "" }));
+      // Validate registration form
+      const validation = validateRegistrationForm({
+        name: form.name,
+        email: form.email,
+        password: form.password,
+      });
+
+      if (!validation.isValid) {
+        const firstError = Object.values(validation.errors)[0];
+        return setError(firstError);
+      }
+
+      // Check if email already exists
+      if (DB.userExists(form.email.trim())) {
+        return setError("This email is already registered. Please sign in instead.");
+      }
+
+      // Sanitize and normalize inputs before storing
+      const sanitizedName = normalizeWhitespace(form.name);
+      const sanitizedEmail = form.email.trim().toLowerCase();
+
+      // Create user
+      try {
+        DB.insertUser(sanitizedName, sanitizedEmail, form.password);
+        setSuccess("✅ Account created successfully! Redirecting to sign in...");
+        
+        // Auto-switch to login after 1.5 seconds
+        setTimeout(() => {
+          switchMode("login");
+          setForm(f => ({ ...f, email: sanitizedEmail, password: "" }));
+        }, 1500);
+      } catch (err) {
+        setError("Failed to create account. Please try again.");
+      }
     } else {
-      const u = DB.loginUser(form.email.trim(), form.password);
-      if (!u) return setError("Invalid email or password.");
-      login(u);
+      // Validate login form
+      const validation = validateLoginForm({
+        email: form.email,
+        password: form.password,
+      });
+
+      if (!validation.isValid) {
+        const firstError = Object.values(validation.errors)[0];
+        return setError(firstError);
+      }
+
+      // Attempt login with sanitized email
+      const sanitizedEmail = form.email.trim().toLowerCase();
+      const user = DB.loginUser(sanitizedEmail, form.password);
+      
+      if (!user) {
+        return setError("Invalid email or password. Please try again.");
+      }
+
+      // Successful login
+      try {
+        login(user);
+        setSuccess("✅ Signed in successfully!");
+      } catch (err) {
+        setError("Failed to log in. Please try again.");
+      }
     }
   };
 
@@ -66,31 +136,54 @@ export default function AuthPage() {
 
         {/* Form */}
         {mode === "register" && (
-          <input
-            name="name"
-            placeholder="Full Name"
-            value={form.name}
-            onChange={handle}
-            style={s.input}
-          />
+          <div>
+            <input
+              name="name"
+              placeholder="Full Name"
+              value={form.name}
+              onChange={handle}
+              style={{
+                ...s.input,
+                ...(fieldErrors.name ? { borderColor: '#ef4444', background: '#ef444411' } : {})
+              }}
+            />
+            {fieldErrors.name && <div style={s.fieldHint}>{fieldErrors.name}</div>}
+          </div>
         )}
-        <input
-          name="email"
-          type="email"
-          placeholder="Email Address"
-          value={form.email}
-          onChange={handle}
-          style={s.input}
-        />
-        <input
-          name="password"
-          type="password"
-          placeholder="Password"
-          value={form.password}
-          onChange={handle}
-          style={s.input}
-          onKeyDown={(e) => e.key === "Enter" && submit()}
-        />
+
+        <div>
+          <input
+            name="email"
+            type="email"
+            placeholder="Email Address"
+            value={form.email}
+            onChange={handle}
+            style={{
+              ...s.input,
+              ...(fieldErrors.email ? { borderColor: '#ef4444', background: '#ef444411' } : {})
+            }}
+          />
+          {fieldErrors.email && <div style={s.fieldHint}>{fieldErrors.email}</div>}
+        </div>
+
+        <div>
+          <input
+            name="password"
+            type="password"
+            placeholder="Password"
+            value={form.password}
+            onChange={handle}
+            style={{
+              ...s.input,
+              ...(fieldErrors.password ? { borderColor: '#ef4444', background: '#ef444411' } : {})
+            }}
+            onKeyDown={(e) => e.key === "Enter" && submit()}
+          />
+          {fieldErrors.password && <div style={s.fieldHint}>{fieldErrors.password}</div>}
+          {mode === "register" && form.password && !fieldErrors.password && (
+            <div style={s.fieldHintSuccess}>✓ Password is valid</div>
+          )}
+        </div>
 
         {error   && <div style={s.errorBox}>{error}</div>}
         {success && <div style={s.successBox}>{success}</div>}
@@ -221,5 +314,22 @@ const s = {
     fontSize: 11,
     textAlign: "center",
     border: "1px solid #1a1a2e",
+  },
+  fieldHint: {
+    color: "#ef4444",
+    fontSize: 12,
+    marginTop: -8,
+    marginBottom: 12,
+    paddingLeft: 4,
+    display: "flex",
+    alignItems: "center",
+    gap: 4,
+  },
+  fieldHintSuccess: {
+    color: "#22c55e",
+    fontSize: 12,
+    marginTop: -8,
+    marginBottom: 12,
+    paddingLeft: 4,
   },
 };

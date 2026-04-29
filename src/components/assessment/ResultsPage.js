@@ -1,6 +1,9 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const ResultsPage = ({ answers, questions, violationCount, timeUsed, onRetry }) => {
+  const navigate = useNavigate();
+
   const score = questions.reduce((acc, q) => {
     return acc + (answers[q.id] === q.answer ? 1 : 0);
   }, 0);
@@ -188,7 +191,34 @@ const ResultsPage = ({ answers, questions, violationCount, timeUsed, onRetry }) 
         </div>
 
         {/* Actions */}
-        <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
+        <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
+          <button
+            onClick={() => navigate('/')}
+            style={{
+              background: 'rgba(255,255,255,0.04)',
+              color: 'rgba(255,255,255,0.6)',
+              border: '1px solid rgba(255,255,255,0.12)',
+              padding: '14px 28px',
+              borderRadius: '10px',
+              fontSize: '14px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              fontFamily: "'Outfit', sans-serif",
+              transition: 'all 0.2s',
+            }}
+            onMouseEnter={e => {
+              e.currentTarget.style.borderColor = 'rgba(99,102,241,0.4)';
+              e.currentTarget.style.color = '#818cf8';
+              e.currentTarget.style.background = 'rgba(99,102,241,0.08)';
+            }}
+            onMouseLeave={e => {
+              e.currentTarget.style.borderColor = 'rgba(255,255,255,0.12)';
+              e.currentTarget.style.color = 'rgba(255,255,255,0.6)';
+              e.currentTarget.style.background = 'rgba(255,255,255,0.04)';
+            }}
+          >
+            ← Back to Home
+          </button>
           <button
             onClick={onRetry}
             style={{

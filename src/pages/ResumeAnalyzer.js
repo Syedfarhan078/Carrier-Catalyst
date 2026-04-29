@@ -7,6 +7,7 @@ import {
   analyzeSkillGap,
   calculateResumeScore,
 } from '../utils/resumeAnalyzer';
+import { validatePDFFile, sanitizeInput } from '../utils/validators';
 import { careerPaths, categoryConfig } from '../data/skillsData';
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -249,6 +250,17 @@ export default function ResumeAnalyzer() {
   const resultsRef = useRef(null);
 
   const handleFile = (f) => {
+    // Validate PDF before accepting
+    if (f) {
+      const v = validatePDFFile(f);
+      if (!v.isValid) {
+        setError(v.error);
+        return;
+      }
+      // sanitize filename (for display only)
+      f.displayName = sanitizeInput(f.name);
+    }
+
     setFile(f);
     setAnalyzed(false);
     setError('');

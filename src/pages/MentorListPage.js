@@ -3,6 +3,7 @@
 // ─────────────────────────────────────────────────────────────
 
 import React, { useState, useMemo } from "react";
+import { validateSearchInput, sanitizeInput } from "../utils/validators";
 import { useNavigate } from "react-router-dom";
 import MentorCard from "../components/MentorCard";
 import { mentorsData } from "../data/mentorsData";
@@ -12,6 +13,7 @@ const roles = ["All", "Frontend Developer", "Backend Engineer", "Data Scientist"
 const MentorListPage = () => {
   const navigate = useNavigate();
   const [search, setSearch] = useState("");
+  const [searchError, setSearchError] = useState("");
   const [selectedRole, setSelectedRole] = useState("All");
   const [sortBy, setSortBy] = useState("rating"); // 'rating' | 'price_asc' | 'price_desc'
 
@@ -112,20 +114,30 @@ const MentorListPage = () => {
         <div style={{ display: "flex", gap: "12px", marginBottom: "20px", flexWrap: "wrap" }}>
           <div style={{ flex: 1, minWidth: "240px", position: "relative" }}>
             <span style={{ position: "absolute", left: "14px", top: "50%", transform: "translateY(-50%)", fontSize: "16px" }}>🔍</span>
-            <input
-              type="text"
-              placeholder="Search by name, role, skill..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              style={{
-                width: "100%", boxSizing: "border-box",
-                padding: "12px 14px 12px 42px",
-                background: "rgba(255,255,255,0.05)",
-                border: "1px solid rgba(255,255,255,0.1)",
-                borderRadius: "12px", color: "#F9FAFB", fontSize: "14px",
-                outline: "none",
-              }}
-            />
+              <input
+                type="text"
+                placeholder="Search by name, role, skill..."
+                value={search}
+                onChange={(e) => {
+                  const v = e.target.value;
+                  const validation = validateSearchInput(v);
+                  if (!validation.isValid) {
+                    setSearchError(validation.error);
+                    return;
+                  }
+                  setSearchError("");
+                  setSearch(sanitizeInput(v));
+                }}
+                style={{
+                  width: "100%", boxSizing: "border-box",
+                  padding: "12px 14px 12px 42px",
+                  background: "rgba(255,255,255,0.05)",
+                  border: "1px solid rgba(255,255,255,0.1)",
+                  borderRadius: "12px", color: "#F9FAFB", fontSize: "14px",
+                  outline: "none",
+                }}
+              />
+              {searchError && <div style={{ color: '#ef4444', marginTop: 8, fontSize: 13 }}>{searchError}</div>}
           </div>
           <select
             value={sortBy}
@@ -176,6 +188,7 @@ const MentorListPage = () => {
             display: "grid",
             gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
             gap: "20px",
+            alignItems: "start",
           }}>
             {filteredMentors.map((mentor) => (
               <MentorCard key={mentor.id} mentor={mentor} />
