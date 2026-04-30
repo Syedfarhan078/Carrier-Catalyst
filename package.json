@@ -18,7 +18,19 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build"
+    "build": "react-scripts build",
+    "postbuild": "react-snap"
+  },
+  "reactSnap": {
+    "include": [
+      "/",
+      "/select-career",
+      "/roadmap",
+      "/courses",
+      "/resume-analyzer",
+      "/assessment",
+      "/mentors"
+    ]
   },
   "browserslist": {
     "production": [
@@ -31,5 +43,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "react-snap": "^1.23.0"
   }
 }
