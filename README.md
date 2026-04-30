@@ -14,20 +14,43 @@ The application has been recently upgraded from a basic HTML/CSS/JS stack to a m
 
 ---
 
+## 📸 Showcase
+
+Here is a glimpse of the Career Catalyst experience:
+
+### 1. Cinematic Homepage
+*Immersive, scroll-driven storytelling with custom WebGL shaders and Particle Text.*
+![Home Page](./public/screenshots/home.png)
+
+### 2. Career Selection
+*Interactive, physics-driven cards using Framer Motion.*
+![Career Selection](./public/screenshots/select_career.png)
+
+### 3. Interactive Roadmap
+*Track your learning progress with an interactive checklist and timeline.*
+![Roadmap](./public/screenshots/roadmap.png)
+
+### 4. AI Resume Analyzer
+*Analyze your resume using TensorFlow.js right in your browser.*
+![Resume Analyzer](./public/screenshots/resume_analyzer.png)
+
+---
+
 ## 🚀 Key Features
 
 | Feature | Description |
 |---|---|
 | 🔐 **Authentication** | Secure register & login system backed by a simulated SQL database using localStorage. |
-| 🧊 **Immersive 3D UI** | Stunning `CareerCube3D`, `ParticleText3D`, and `AnimatedBackground` using optimized WebGL and CSS-3D techniques. |
+| 🧊 **Immersive WebGL UI** | Custom vertex and fragment shaders for atmospheric backgrounds and particles. |
 | 🗺 **Interactive Roadmaps** | Phase-by-phase learning roadmap with progress tracking and checklists. |
+| ✨ **Tactile Physics Interactions** | Framer Motion integration for snappy, spring-based micro-interactions. |
 | 📚 **Curated Courses** | Carefully selected courses complete with difficulty levels, durations, and direct links. |
 | ▶ **YouTube Integration** | Top learning channel recommendations tailored for each career path. |
 | 💼 **Interview Prep** | Expandable interview Q&A accordion categorized by technical skills. |
 | 📅 **Study Planner** | Interactive weekly task planner with add/complete/delete functionality. |
-| ✅ **Progress Tracking** | Advanced stats, phase breakdowns, and a 3D `ProgressBar3D` component to visualize your journey. |
+| ♿ **Hyper-Accessibility** | Keyboard-first navigation, screen-reader optimized, and reduced-motion support. |
 | 📝 **Smart Assessment** | Career assessment quiz to recommend the best path based on your skills and interests. |
-| ⚡ **Optimized Performance** | Visibility-based rendering for heavy 3D components and CSS-based fallbacks to ensure a buttery smooth, 60fps premium experience. |
+| ⚡ **Edge-Ready Performance** | Static HTML prerendering, service workers, and visibility-based 3D rendering. |
 
 ---
 
