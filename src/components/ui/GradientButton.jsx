@@ -1,4 +1,4 @@
-import React from "react";
+import { motion } from "framer-motion";
 
 /**
  * GradientButton
@@ -8,7 +8,7 @@ import React from "react";
  *  - children: React node
  *  - className: extra class names
  */
-const GradientButton = ({ variant = "primary", onClick, children, className = "" }) => {
+const GradientButton = ({ variant = "primary", onClick, children, className = "", style = {} }) => {
   const variantClass = {
     primary: "btn-primary",
     ghost: "btn-secondary",
@@ -16,12 +16,16 @@ const GradientButton = ({ variant = "primary", onClick, children, className = ""
   }[variant] || "btn-primary";
 
   return (
-    <button
+    <motion.button
+      whileHover={{ scale: 1.05, y: -2 }}
+      whileTap={{ scale: 0.95 }}
+      transition={{ type: "spring", stiffness: 400, damping: 17 }}
       className={`cc-btn ${variantClass} ${className}`}
       onClick={onClick}
+      style={style}
     >
       {children}
-    </button>
+    </motion.button>
   );
 };
 

@@ -45,10 +45,13 @@ const StickyShowcase = ({ features = [], onCTA }) => {
           </>
         )}
 
-        {features.map((feature, i) => (
+        {features.map((feature, i) => {
+          const isActive = i === activeIndex;
+          return (
           <div
             key={feature.id}
-            className={`showcase-slide ${i === activeIndex ? "is-active" : ""}`}
+            className={`showcase-slide ${isActive ? "is-active" : ""}`}
+            aria-hidden={!isActive}
           >
             <div className="showcase-content">
               {/* Text side */}
@@ -70,9 +73,11 @@ const StickyShowcase = ({ features = [], onCTA }) => {
                 <button
                   className={`showcase-cta showcase-cta-${feature.color}`}
                   onClick={() => onCTA?.(feature.action)}
+                  tabIndex={isActive ? 0 : -1}
+                  aria-label={`${feature.ctaText} for ${feature.title}`}
                 >
                   {feature.ctaText}
-                  <span style={{ fontSize: 18 }}>→</span>
+                  <span style={{ fontSize: 18 }} aria-hidden="true">→</span>
                 </button>
               </div>
 
@@ -97,10 +102,18 @@ const StickyShowcase = ({ features = [], onCTA }) => {
               </div>
             </div>
           </div>
-        ))}
+        )})}
+
+        {/* Screen reader announcement for slide changes */}
+        <div className="sr-only" aria-live="polite">
+          {features[activeIndex] ? `Showing feature: ${features[activeIndex].title}` : ""}
+        </div>
 
         {/* Scroll progress dots */}
-        <div style={{
+        <div 
+          role="tablist"
+          aria-label="Feature navigation"
+          style={{
           position: "absolute",
           right: 32,
           top: "50%",
@@ -110,9 +123,12 @@ const StickyShowcase = ({ features = [], onCTA }) => {
           gap: 12,
           zIndex: 20,
         }}>
-          {features.map((_, i) => (
+          {features.map((feature, i) => (
             <div
               key={i}
+              role="tab"
+              aria-selected={i === activeIndex}
+              aria-label={`Feature ${i + 1}: ${feature.title}`}
               style={{
                 width: i === activeIndex ? 8 : 6,
                 height: i === activeIndex ? 24 : 6,

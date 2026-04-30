@@ -4,6 +4,7 @@ import CAREERS from "../data/careers";
 import PageHeader from "../components/PageHeader";
 import "../styles/advancedCareer.css";
 import { RoadmapIcon, TargetIcon, CheckIcon, CatalystIcon } from "../components/Icons";
+import { motion } from "framer-motion";
 
 export default function RoadmapPage() {
   const location = useLocation();
@@ -21,7 +22,14 @@ export default function RoadmapPage() {
       <div className="advanced-container">
         <div className="advanced-wrapper">
           <div className="career-nav-bar">
-            <div className="career-nav-brand" onClick={() => navigate("/", { state: { page: "home" } })}>
+            <div 
+              className="career-nav-brand" 
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => { if(e.key === 'Enter' || e.key === ' ') navigate("/", { state: { page: "home" } }) }}
+              onClick={() => navigate("/", { state: { page: "home" } })}
+              aria-label="Return to Home"
+            >
               <CatalystIcon size={24} color="#6366f1" />
               <span>Career Catalyst</span>
             </div>
@@ -42,11 +50,20 @@ export default function RoadmapPage() {
             </p>
 
             <div className="career-grid career-grid-large">
-              {Object.entries(CAREERS).map(([key, c]) => (
-                <div
+              {Object.entries(CAREERS).map(([key, c], idx) => (
+                <motion.div
                   key={key}
                   className="career-card-advanced"
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => { if(e.key === 'Enter' || e.key === ' ') navigate(`/roadmap?career=${key}`) }}
                   onClick={() => navigate(`/roadmap?career=${key}`)}
+                  aria-label={`View roadmap for ${c.label}`}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: idx * 0.1, type: "spring", stiffness: 300, damping: 20 }}
+                  whileHover={{ scale: 1.03, y: -5, boxShadow: `0 15px 30px ${c.color}22` }}
+                  whileTap={{ scale: 0.97 }}
                 >
                   <div>
                     <div className="career-card-icon">{c.icon}</div>
@@ -60,7 +77,7 @@ export default function RoadmapPage() {
                   <div className="career-card-cta">
                     View Roadmap →
                   </div>
-                </div>
+                </motion.div>
               ))}
             </div>
           </div>
@@ -87,7 +104,14 @@ export default function RoadmapPage() {
       <div className="advanced-wrapper">
         {/* Navigation Bar */}
         <div className="career-nav-bar">
-          <div className="career-nav-brand" onClick={() => navigate("/", { state: { page: "home" } })}>
+          <div 
+            className="career-nav-brand" 
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => { if(e.key === 'Enter' || e.key === ' ') navigate("/", { state: { page: "home" } }) }}
+            onClick={() => navigate("/", { state: { page: "home" } })}
+            aria-label="Return to Home"
+          >
             <CatalystIcon size={24} color="#6366f1" />
             <span>Career Catalyst</span>
           </div>
@@ -141,16 +165,23 @@ export default function RoadmapPage() {
               
               <ul className="roadmap-steps-list">
                 {phase.steps.map((step, stepIdx) => (
-                  <li
+                  <motion.li
                     key={stepIdx}
                     className={`roadmap-step ${completed[step] ? 'completed' : ''}`}
+                    role="checkbox"
+                    aria-checked={!!completed[step]}
+                    tabIndex={0}
+                    onKeyDown={(e) => { if(e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(step); } }}
                     onClick={() => toggle(step)}
+                    whileHover={{ scale: 1.01, x: 5 }}
+                    whileTap={{ scale: 0.98 }}
+                    transition={{ type: "spring", stiffness: 400, damping: 15 }}
                   >
                     <div className="roadmap-checkbox">
-                      {completed[step] && <CheckIcon size={14} color="#000" />}
+                      {completed[step] && <motion.div initial={{scale:0}} animate={{scale:1}} transition={{type:"spring"}}><CheckIcon size={14} color="#000" /></motion.div>}
                     </div>
                     <span className="roadmap-step-text">{step}</span>
-                  </li>
+                  </motion.li>
                 ))}
               </ul>
             </div>

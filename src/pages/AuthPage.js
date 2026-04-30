@@ -3,6 +3,7 @@ import { useAuth } from "../context/AuthContext";
 import DB from "../data/db";
 import { validateEmail, validatePassword, validateName, validateLoginForm, validateRegistrationForm, normalizeWhitespace } from "../utils/validators";
 import { CatalystIcon } from "../components/Icons";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function AuthPage() {
   const { login } = useAuth();
@@ -112,7 +113,12 @@ export default function AuthPage() {
 
   return (
     <div style={s.bg}>
-      <div style={s.card}>
+      <motion.div 
+        style={s.card}
+        initial={{ opacity: 0, y: 30, scale: 0.95 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ type: "spring", stiffness: 300, damping: 25 }}
+      >
         {/* Brand */}
         <div style={s.brand}>
           <CatalystIcon size={44} color="#6C63FF" />
@@ -125,13 +131,15 @@ export default function AuthPage() {
         {/* Tabs */}
         <div style={s.tabs}>
           {["login", "register"].map((m) => (
-            <button
+            <motion.button
               key={m}
               onClick={() => switchMode(m)}
               style={{ ...s.tab, ...(mode === m ? s.tabActive : {}) }}
+              whileHover={{ backgroundColor: mode === m ? "#6C63FF22" : "rgba(255,255,255,0.05)" }}
+              whileTap={{ scale: 0.97 }}
             >
               {m === "login" ? "Sign In" : "Sign Up"}
-            </button>
+            </motion.button>
           ))}
         </div>
 
@@ -141,6 +149,7 @@ export default function AuthPage() {
             <input
               name="name"
               placeholder="Full Name"
+              aria-label="Full Name"
               value={form.name}
               onChange={handle}
               style={{
@@ -157,6 +166,7 @@ export default function AuthPage() {
             name="email"
             type="email"
             placeholder="Email Address"
+            aria-label="Email Address"
             value={form.email}
             onChange={handle}
             style={{
@@ -172,6 +182,7 @@ export default function AuthPage() {
             name="password"
             type="password"
             placeholder="Password"
+            aria-label="Password"
             value={form.password}
             onChange={handle}
             style={{
@@ -189,15 +200,25 @@ export default function AuthPage() {
         {error   && <div style={s.errorBox}>{error}</div>}
         {success && <div style={s.successBox}>{success}</div>}
 
-        <button onClick={submit} style={s.submitBtn}>
+        <motion.button 
+          onClick={submit} 
+          style={s.submitBtn}
+          whileHover={{ scale: 1.02, y: -2 }}
+          whileTap={{ scale: 0.98 }}
+          transition={{ type: "spring", stiffness: 400, damping: 15 }}
+        >
           {mode === "login" ? "Sign In →" : "Create Account →"}
-        </button>
+        </motion.button>
 
         <p style={s.switchText}>
           {mode === "login" ? "Don't have an account?" : "Already have an account?"}{" "}
           <span
             style={s.switchLink}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => { if(e.key === 'Enter' || e.key === ' ') switchMode(mode === "login" ? "register" : "login") }}
             onClick={() => switchMode(mode === "login" ? "register" : "login")}
+            aria-label={mode === "login" ? "Switch to Sign Up" : "Switch to Sign In"}
           >
             {mode === "login" ? "Sign Up" : "Sign In"}
           </span>
@@ -206,7 +227,7 @@ export default function AuthPage() {
         <div style={s.dbBadge}>
           🗄️ Backed by SQL — users · sessions · progress · planner
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }

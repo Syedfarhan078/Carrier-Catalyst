@@ -92,8 +92,9 @@ export default function HomePage({ navigate, user, onLogout }) {
       {/* Navbar */}
       <Navbar user={user} onLogout={onLogout} />
 
-      {/* ═══ ACT 1: Cinematic Hero ═══ */}
-      <HeroSection />
+      <main id="main-content" tabIndex="-1" style={{ outline: 'none' }}>
+        {/* ═══ ACT 1: Cinematic Hero ═══ */}
+        <HeroSection />
 
       {/* ═══ ACT 2: Mission Statement — Word-by-Word Reveal ═══ */}
       <div className="section-divider-glow" />
@@ -126,8 +127,9 @@ export default function HomePage({ navigate, user, onLogout }) {
       </ScrollReveal>
 
       {/* ═══ ACT 5: Stats — Count Up on Scroll ═══ */}
-      <div className="section-divider-glow" />
+      <div className="section-divider-glow" aria-hidden="true" />
       <ExperientialStats />
+      </main>
     </div>
   );
 }
