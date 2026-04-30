@@ -14,28 +14,6 @@ The application has been recently upgraded from a basic HTML/CSS/JS stack to a m
 
 ---
 
-## 📸 Showcase
-
-Here is a glimpse of the Career Catalyst experience:
-
-### 1. Cinematic Homepage
-*Immersive, scroll-driven storytelling with custom WebGL shaders and Particle Text.*
-![Home Page](./public/screenshots/home.png)
-
-### 2. Career Selection
-*Interactive, physics-driven cards using Framer Motion.*
-![Career Selection](./public/screenshots/select_career.png)
-
-### 3. Interactive Roadmap
-*Track your learning progress with an interactive checklist and timeline.*
-![Roadmap](./public/screenshots/roadmap.png)
-
-### 4. AI Resume Analyzer
-*Analyze your resume using TensorFlow.js right in your browser.*
-![Resume Analyzer](./public/screenshots/resume_analyzer.png)
-
----
-
 ## 🚀 Key Features
 
 | Feature | Description |
