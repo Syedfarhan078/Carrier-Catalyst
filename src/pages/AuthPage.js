@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import DB from "../data/db";
 import { validateEmail, validatePassword, validateName, validateLoginForm, validateRegistrationForm, normalizeWhitespace } from "../utils/validators";
+import { CatalystIcon } from "../components/Icons";
 
 export default function AuthPage() {
   const { login } = useAuth();
@@ -114,9 +115,9 @@ export default function AuthPage() {
       <div style={s.card}>
         {/* Brand */}
         <div style={s.brand}>
-          <span style={{ fontSize: 44 }}>🎯</span>
+          <CatalystIcon size={44} color="#6C63FF" />
           <div>
-            <h1 style={s.brandName}>SkillPath</h1>
+            <h1 style={s.brandName}>Career Catalyst</h1>
             <p style={s.brandTagline}>AI-Powered Career Compass</p>
           </div>
         </div>
@@ -235,7 +236,7 @@ const s = {
     justifyContent: "center",
     marginBottom: 28,
   },
-  brandName: { fontSize: 30, fontWeight: 900, color: "#6C63FF", margin: 0 },
+  brandName: { fontSize: 30, fontWeight: 800, color: "#6C63FF", margin: 0, letterSpacing: '-0.03em' },
   brandTagline: { color: "#666", fontSize: 13, margin: 0 },
   tabs: {
     display: "flex",
@@ -294,7 +295,8 @@ const s = {
     border: "none",
     borderRadius: 12,
     fontSize: 15,
-    fontWeight: 700,
+    fontWeight: 600,
+    letterSpacing: '-0.01em',
     cursor: "pointer",
     marginTop: 4,
   },

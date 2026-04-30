@@ -1,9 +1,10 @@
 import React, { useRef } from "react";
+import { BrainIcon, GlobeIcon } from "../Icons";
 
 const TRACKS = [
   {
     id: "data-science",
-    emoji: "🧠",
+    icon: <BrainIcon size={28} color="#9b96ff" />,
     title: "Data Science",
     titleColor: "#9b96ff",
     description:
@@ -15,7 +16,7 @@ const TRACKS = [
   },
   {
     id: "web-development",
-    emoji: "🌐",
+    icon: <GlobeIcon size={28} color="#FF7A18" />,
     title: "Web Development",
     titleColor: "#FF7A18",
     description:
@@ -39,6 +40,10 @@ const TrackCard = ({ track, onLearn }) => {
     const tiltX = (y / rect.height) * 2 * -4;
     const tiltY = (x / rect.width) * 2 * 4;
     card.style.transform = `translateY(-2px) rotateX(${tiltX}deg) rotateY(${tiltY}deg)`;
+    
+    // Set variables for the cursor tracking glow
+    card.style.setProperty("--mouse-x", `${e.clientX - rect.left}px`);
+    card.style.setProperty("--mouse-y", `${e.clientY - rect.top}px`);
   };
 
   const handleMouseLeave = () => {
@@ -52,8 +57,8 @@ const TrackCard = ({ track, onLearn }) => {
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
     >
-      <span style={{ fontSize: 28, marginBottom: 14, display: "block" }}>
-        {track.emoji}
+      <span style={{ marginBottom: 14, display: "block" }}>
+        {track.icon}
       </span>
       <div
         style={{

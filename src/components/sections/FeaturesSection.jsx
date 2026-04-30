@@ -1,5 +1,6 @@
 import React from "react";
 import FeatureCard from "../ui/FeatureCard";
+import { BriefcaseIcon, ClipboardIcon, TargetIcon, TrendingUpIcon } from "../Icons";
 
 const FeaturesSection = ({ onMentor, onResume, onAssessment }) => {
   return (
@@ -15,9 +16,13 @@ const FeaturesSection = ({ onMentor, onResume, onAssessment }) => {
         {/* Mentor Marketplace — full width, featured */}
         <FeatureCard
           isFeatured
-          badge="🔥 Most Popular"
+          badge={
+            <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+              <TrendingUpIcon size={14} /> Most Popular
+            </div>
+          }
           badgeVariant="hot"
-          icon="✦"
+          icon={<BriefcaseIcon size={32} />}
           title="Mentor Marketplace"
           description="Connect 1:1 with senior engineers, data scientists, and product managers from top companies. Get personalized guidance that courses can't offer."
           ctaText="Explore Mentors →"
@@ -25,7 +30,7 @@ const FeaturesSection = ({ onMentor, onResume, onAssessment }) => {
           onCTA={onMentor}
           stats={[
             { value: "200+", label: "Mentors" },
-            { value: "4.9★", label: "Avg Rating" },
+            { value: "4.9/5", label: "Avg Rating" },
           ]}
         />
 
@@ -33,7 +38,7 @@ const FeaturesSection = ({ onMentor, onResume, onAssessment }) => {
         <FeatureCard
           badge="AI Powered"
           badgeVariant="ai"
-          icon="◈"
+          icon={<ClipboardIcon size={32} />}
           title="Resume Analyzer"
           description="Upload your resume. Get instant AI feedback, ATS scoring, and targeted suggestions to stand out."
           ctaText="Analyze Resume →"
@@ -45,7 +50,7 @@ const FeaturesSection = ({ onMentor, onResume, onAssessment }) => {
         <FeatureCard
           badge="Proctored"
           badgeVariant="new"
-          icon="⬡"
+          icon={<TargetIcon size={32} />}
           title="AI Assessment"
           description="Validate your skills with a proctored AI test. Earn a certificate that recruiters actually trust."
           ctaText="Start Assessment →"

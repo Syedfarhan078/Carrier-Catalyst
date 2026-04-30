@@ -1,11 +1,29 @@
 import { useNavigate } from "react-router-dom";
-import React, { Suspense, lazy } from "react";
+import React, { Suspense, lazy, useEffect, useRef } from "react";
 import GradientButton from "./GradientButton";
 const AnimatedBackground = lazy(() => import("../3d/AnimatedBackground"));
 const ParticleText3D = lazy(() => import("../3d/ParticleText3D"));
 
 const HeroSection = () => {
     const navigate = useNavigate();
+    const orbRef = useRef(null);
+    const bgRef = useRef(null);
+
+    useEffect(() => {
+      const handleScroll = () => {
+        const scrolled = window.scrollY;
+        if (orbRef.current) {
+          // Move the orb down slower than the page scrolls (parallax)
+          orbRef.current.style.transform = `translate(-50%, calc(-60% + ${scrolled * 0.4}px)) scale(${1 + scrolled * 0.0005})`;
+        }
+        if (bgRef.current) {
+          bgRef.current.style.transform = `translateY(${scrolled * 0.15}px)`;
+        }
+      };
+      
+      window.addEventListener('scroll', handleScroll, { passive: true });
+      return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
   return (
     <section className="cc-hero" style={{ position: "relative", overflow: "hidden" }}>
       <Suspense fallback={null}>
@@ -13,8 +31,8 @@ const HeroSection = () => {
       </Suspense>
 
       <div style={{ position: "relative", zIndex: 10 }}>
-        <div className="cc-hero-bg" />
-        <div className="cc-hero-orb" />
+        <div className="cc-hero-bg" ref={bgRef} />
+        <div className="cc-hero-orb" ref={orbRef} />
 
         <div className="cc-badge">
         <div className="cc-badge-dot" />
@@ -23,14 +41,14 @@ const HeroSection = () => {
 
         <div style={{ marginBottom: "20px" }}>
           <Suspense fallback={null}>
-            <ParticleText3D text="SkillPath" color="#6366f1" />
+            <ParticleText3D text="Career Catalyst" color="#6366f1" />
           </Suspense>
         </div>
 
         <h1 className="cc-hero-title" style={{ marginTop: "10px" }}>
-        Find Your
+        Accelerate Your
         <br />
-        <span className="cc-hero-title-gradient">Career Catalyst</span>
+        <span className="cc-hero-title-gradient">Tech Career</span>
       </h1>
 
       <p className="cc-hero-sub">
@@ -43,7 +61,7 @@ const HeroSection = () => {
         Get Started Free →
         </GradientButton>
 
-        <GradientButton variant="ghost" onClick={() => navigate("/roadmap", { state: { career: "frontend", user: null} })}>
+        <GradientButton variant="ghost" onClick={() => navigate("/roadmap", { state: { career: "webdev", user: null} })}>
             RoadMap
         </GradientButton>
       </div>

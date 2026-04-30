@@ -6,6 +6,7 @@ import WarningModal from './WarningModal';
 import ResultsPage from './ResultsPage';
 import { questions, assessmentConfig } from '../../data/assessmentQuestions';
 import { useNavigate } from "react-router-dom";
+import { CatalystIcon } from '../Icons';
 
 // ─── Reusable Back Button ─────────────────────────────────────────────────────
 const BackToHomeButton = ({ label = '← Back to Home' }) => {
@@ -329,10 +330,12 @@ const AssessmentPage = () => {
               width: '32px', height: '32px', borderRadius: '8px',
               background: 'linear-gradient(135deg, #6366f1, #4f46e5)',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              fontSize: '16px'
-            }}>⚡</div>
+              color: '#fff'
+            }}>
+              <CatalystIcon size={18} />
+            </div>
             <div>
-              <div style={{ fontWeight: '700', fontSize: '15px', color: '#f1f5f9' }}>SkillPath Assessment</div>
+              <div style={{ fontWeight: '700', fontSize: '15px', color: '#f1f5f9' }}>Career Catalyst Assessment</div>
               <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.35)', fontFamily: "'Space Mono', monospace" }}>
                 Full Stack Developer
               </div>

@@ -101,7 +101,7 @@ const CareerCube3D = ({ careers = [], onSelect, selectedIndex = 0 }) => {
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
       ctx.fillStyle = "#818cf8";
-      ctx.fillText(career.icon || "💼", 128, 80);
+      ctx.fillText(career.iconText || "💼", 128, 80);
 
       // Label
       ctx.font = "bold 26px Arial";

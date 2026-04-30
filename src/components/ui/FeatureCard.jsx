@@ -23,6 +23,10 @@ const FeatureCard = ({
     const tiltX = (y / rect.height) * 2 * -5;
     const tiltY = (x / rect.width) * 2 * 5;
     card.style.transform = `translateY(-3px) rotateX(${tiltX}deg) rotateY(${tiltY}deg)`;
+    
+    // Set variables for the cursor tracking glow
+    card.style.setProperty("--mouse-x", `${e.clientX - rect.left}px`);
+    card.style.setProperty("--mouse-y", `${e.clientY - rect.top}px`);
   };
 
   const handleMouseLeave = () => {

@@ -3,7 +3,7 @@ import { useState } from "react";
 import CAREERS from "../data/careers";
 import PageHeader from "../components/PageHeader";
 import "../styles/advancedCareer.css";
-import { RoadmapIcon } from "../components/Icons";
+import { RoadmapIcon, TargetIcon, CheckIcon, CatalystIcon } from "../components/Icons";
 
 export default function RoadmapPage() {
   const location = useLocation();
@@ -21,12 +21,12 @@ export default function RoadmapPage() {
       <div className="advanced-container">
         <div className="advanced-wrapper">
           <div className="career-nav-bar">
-            <div className="career-nav-brand" onClick={() => navigate("/")}>
-              <span style={{ fontSize: "1.5rem" }}>✦</span>
-              <span>SkillPath</span>
+            <div className="career-nav-brand" onClick={() => navigate("/", { state: { page: "home" } })}>
+              <CatalystIcon size={24} color="#6366f1" />
+              <span>Career Catalyst</span>
             </div>
             <button
-              onClick={() => navigate("/")}
+              onClick={() => navigate("/", { state: { page: "home" } })}
               className="career-nav-back"
             >
               ← Back to Home
@@ -87,12 +87,12 @@ export default function RoadmapPage() {
       <div className="advanced-wrapper">
         {/* Navigation Bar */}
         <div className="career-nav-bar">
-          <div className="career-nav-brand" onClick={() => navigate("/")}>
-            <span>🎯</span>
-            <span>SkillPath</span>
+          <div className="career-nav-brand" onClick={() => navigate("/", { state: { page: "home" } })}>
+            <CatalystIcon size={24} color="#6366f1" />
+            <span>Career Catalyst</span>
           </div>
           <button
-            onClick={() => navigate("/")}
+            onClick={() => navigate("/", { state: { page: "home" } })}
             className="career-nav-back"
           >
             ← Back to Home
@@ -102,7 +102,7 @@ export default function RoadmapPage() {
         {/* Page Header */}
         <div className="roadmap-header">
           <PageHeader
-            icon="�"
+            icon={<RoadmapIcon size={36} color={c.color} />}
             title="Learning Roadmap"
             sub={`Master ${c.label} with our structured learning path`}
             color={c.color}
@@ -147,7 +147,7 @@ export default function RoadmapPage() {
                     onClick={() => toggle(step)}
                   >
                     <div className="roadmap-checkbox">
-                      {completed[step] && '✓'}
+                      {completed[step] && <CheckIcon size={14} color="#000" />}
                     </div>
                     <span className="roadmap-step-text">{step}</span>
                   </li>

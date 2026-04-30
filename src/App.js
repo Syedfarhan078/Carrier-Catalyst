@@ -29,10 +29,15 @@ function AppInner() {
   const [career, setCareer] = useState(null);
 
 useEffect(() => {
-  if (location.state?.career) {
-    const { career: selectedCareer, page: selectedPage } = location.state;
-    setCareer(selectedCareer);
-    setPage(selectedPage || "roadmap");
+  if (location.state) {
+    if (location.state.page === "home") {
+      setPage("home");
+      setCareer(null);
+    } else if (location.state.career) {
+      const { career: selectedCareer, page: selectedPage } = location.state;
+      setCareer(selectedCareer);
+      setPage(selectedPage || "roadmap");
+    }
   }
 }, [location.state]);
 

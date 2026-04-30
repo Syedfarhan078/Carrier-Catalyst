@@ -3,10 +3,13 @@
  * Includes: roadmap phases, courses, YouTube channels, interview Q&A, study plans
  */
 
+import { BrainIcon, GlobeIcon } from "../components/Icons";
+
 const CAREERS = {
   datascience: {
     label: "Data Science",
-    icon: "🧠",
+    icon: <BrainIcon size={32} color="currentColor" />,
+    iconText: "🧠",
     color: "#6C63FF",
     accent: "#a78bfa",
     description: "Master data analysis, machine learning, and AI to become a top Data Scientist.",
@@ -122,7 +125,8 @@ const CAREERS = {
 
   webdev: {
     label: "Web Development",
-    icon: "🌐",
+    icon: <GlobeIcon size={32} color="currentColor" />,
+    iconText: "🌐",
     color: "#F97316",
     accent: "#fb923c",
     description: "Build modern full-stack web applications from front to back end.",
