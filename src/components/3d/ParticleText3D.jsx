@@ -43,16 +43,16 @@ const ParticleText3D = ({ text = "Carrer Catalyst", color = "#6366f1" }) => {
     if (existing) existing.remove();
     container.appendChild(renderer.domElement);
 
-    // ── CREATE TEXT TEXTURE (smaller resolution) ──
+    // ── CREATE TEXT TEXTURE (wide enough for full text) ──
     const canvas = document.createElement("canvas");
-    canvas.width = 1024;
-    canvas.height = 256;
+    canvas.width = 2048;
+    canvas.height = 320;
     const ctx = canvas.getContext("2d");
     ctx.fillStyle = "white";
-    ctx.font = "bold 160px Arial";
+    ctx.font = "bold 180px Arial";
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
-    ctx.fillText(text, 512, 128);
+    ctx.fillText(text, canvas.width / 2, canvas.height / 2);
 
     const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
     const data = imageData.data;
@@ -65,8 +65,8 @@ const ParticleText3D = ({ text = "Carrer Catalyst", color = "#6366f1" }) => {
       for (let x = 0; x < canvas.width; x += step) {
         const idx = (y * canvas.width + x) * 4;
         if (data[idx + 3] > 128) {
-          const px = (x / canvas.width - 0.5) * 18;
-          const py = -(y / canvas.height - 0.5) * 4;
+          const px = (x / canvas.width - 0.5) * 22;
+          const py = -(y / canvas.height - 0.5) * 5;
 
           particleList.push({
             // Target position (text shape)
@@ -209,7 +209,7 @@ const ParticleText3D = ({ text = "Carrer Catalyst", color = "#6366f1" }) => {
       ref={containerRef}
       style={{
         width: "100%",
-        height: "200px",
+        height: "180px",
       }}
     />
   );

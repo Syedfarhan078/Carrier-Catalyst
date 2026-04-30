@@ -514,7 +514,7 @@
   padding: 5px 14px;
   border-radius: 20px;
   background: rgba(108, 99, 255, 0.08);
-  margin-bottom: 24px;
+  margin-bottom: 8px;
 }
 
 .cc-badge-dot {
@@ -535,7 +535,7 @@
   font-size: clamp(36px, 6vw, 64px);
   font-weight: 800;
   line-height: 1.15;
-  margin: 0 0 20px;
+  margin: 0 0 8px;
   color: #fff;
   letter-spacing: -0.03em;
   filter: drop-shadow(0 8px 32px rgba(99, 102, 241, 0.25));
