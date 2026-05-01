@@ -15,7 +15,7 @@ import axios from "axios";
 
 // ── Create the base axios instance ──
 const api = axios.create({
-  baseURL: "http://localhost:5000/api",
+  baseURL: process.env.REACT_APP_API_URL || "/api",
   headers: {
     "Content-Type": "application/json",
   },
@@ -55,9 +55,18 @@ api.interceptors.response.use(
       // window.location.href = "/";
     }
 
+    // Enhance the error object with a user-friendly message
+    if (!error.response) {
+      // No response means the server is unreachable (Network Error, Connection Refused, CORS)
+      error.isNetworkError = true;
+      error.displayMessage = "Cannot connect to the server. Please ensure the backend API is running.";
+    } else {
+      error.displayMessage = error.response?.data?.error?.message || error.message;
+    }
+
     // Log all errors in development for debugging
     if (process.env.NODE_ENV === "development") {
-      console.error(`[API Error] ${error.config?.method?.toUpperCase()} ${error.config?.url} → ${status}: ${message}`);
+      console.error(`[API Error] ${error.config?.method?.toUpperCase()} ${error.config?.url} → ${status || 'NETWORK_ERROR'}: ${error.displayMessage}`);
     }
 
     return Promise.reject(error);

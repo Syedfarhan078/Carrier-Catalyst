@@ -2,6 +2,7 @@
   "name": "skillpath-career-recommender",
   "version": "1.0.0",
   "private": true,
+  "proxy": "http://localhost:5000",
   "dependencies": {
     "@tensorflow-models/blazeface": "^0.1.0",
     "@tensorflow-models/coco-ssd": "^2.2.3",

@@ -75,8 +75,8 @@ export default function AuthPage() {
           setForm(f => ({ ...f, email: sanitizedEmail, password: "" }));
         }, 1500);
       } catch (err) {
-        // Extract the error message from the API response
-        const apiMessage = err.response?.data?.error?.message;
+        // Extract the error message from the API response or network error
+        const apiMessage = err.displayMessage || err.response?.data?.error?.message;
         setError(apiMessage || "Failed to create account. Please try again.");
       } finally {
         setLoading(false);
@@ -102,7 +102,7 @@ export default function AuthPage() {
         login(user);
         setSuccess("✅ Signed in successfully!");
       } catch (err) {
-        const apiMessage = err.response?.data?.error?.message;
+        const apiMessage = err.displayMessage || err.response?.data?.error?.message;
         setError(apiMessage || "Invalid email or password. Please try again.");
       } finally {
         setLoading(false);
@@ -227,8 +227,14 @@ export default function AuthPage() {
           </span>
         </p>
 
-        <div style={s.dbBadge}>
-          🔗 Connected to Career Catalyst API Server
+        <div style={{ 
+          ...s.dbBadge, 
+          color: error?.includes("Cannot connect") ? "#ef4444" : "#666",
+          borderColor: error?.includes("Cannot connect") ? "#ef444455" : "#1e1e3a"
+        }}>
+          {error?.includes("Cannot connect") 
+            ? "⚠️ API Server is Offline" 
+            : "🔗 Connected to Career Catalyst API Server"}
         </div>
       </motion.div>
     </div>
