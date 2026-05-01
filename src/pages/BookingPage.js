@@ -2,9 +2,10 @@
 // BookingPage.js — Booking confirmation + payment flow + history
 // ─────────────────────────────────────────────────────────────
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
-import { mentorsData } from "../data/mentorsData";
+import { fetchMentorById } from "../api/mentorApi";
+import { mentorsData as localMentors } from "../data/mentorsData";
 import PaymentModal from "../components/PaymentModal";
 import {
   saveBooking,
@@ -19,12 +20,38 @@ const BookingPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const mentor = mentorsData.find((m) => m.id === parseInt(id));
   const slot = location.state?.slot;
 
-  const [step, setStep] = useState("confirm"); // 'confirm' | 'booked' | 'payment' | 'done' | 'history'
+  const [mentor, setMentor] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [step, setStep] = useState("confirm");
   const [currentBooking, setCurrentBooking] = useState(null);
   const [showPayment, setShowPayment] = useState(false);
+
+  // Fetch mentor from API (with local fallback for booking history page)
+  useEffect(() => {
+    const loadMentor = async () => {
+      try {
+        const data = await fetchMentorById(id);
+        setMentor(data);
+      } catch (err) {
+        // Fallback to local data
+        const local = localMentors.find((m) => m.id === parseInt(id));
+        if (local) setMentor(local);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadMentor();
+  }, [id]);
+
+  if (loading) {
+    return (
+      <div style={{ minHeight: "100vh", background: "#0F0A1E", display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <p style={{ color: "#9CA3AF", fontSize: "16px" }}>⏳ Loading booking details...</p>
+      </div>
+    );
+  }
 
   if (!mentor) {
     return (
@@ -299,7 +326,7 @@ const BookingPage = () => {
           ) : (
             <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
               {allBookings.map((b) => {
-                const m = mentorsData.find((x) => x.id === b.mentorId);
+                const m = localMentors.find((x) => x.id === b.mentorId);
                 return (
                   <div key={b.id} style={{
                     background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)",

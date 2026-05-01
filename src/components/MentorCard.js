@@ -84,7 +84,7 @@ const MentorCard = ({ mentor }) => {
 
       {/* Skills */}
       <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", marginBottom: "16px" }}>
-        {mentor.skills.slice(0, 4).map((skill) => (
+        {(mentor.skills || []).slice(0, 4).map((skill) => (
           <span key={skill} style={{
             background: "rgba(124, 58, 237, 0.15)",
             border: "1px solid rgba(124, 58, 237, 0.3)",
@@ -97,7 +97,7 @@ const MentorCard = ({ mentor }) => {
             {skill}
           </span>
         ))}
-        {mentor.skills.length > 4 && (
+        {(mentor.skills || []).length > 4 && (
           <span style={{
             background: "rgba(255,255,255,0.05)",
             color: "#6B7280",
@@ -105,7 +105,7 @@ const MentorCard = ({ mentor }) => {
             borderRadius: "20px",
             fontSize: "11px",
           }}>
-            +{mentor.skills.length - 4}
+            +{(mentor.skills || []).length - 4}
           </span>
         )}
       </div>

@@ -4,7 +4,7 @@ import { AuthProvider, useAuth } from "./context/AuthContext";
 import { useLocation } from "react-router-dom";
 import LoadingSpinner from "./components/ui/LoadingSpinner";
 
-import DB from "./data/db";
+
 
 // ──── Lazy-loaded Pages (Code Splitting) ────
 // Each page is loaded on-demand, reducing initial bundle size
@@ -45,7 +45,6 @@ useEffect(() => {
     setPage(p);
     if (c) {
       setCareer(c);
-      if (user) DB.logSession(user.id, c);
     }
   };
 

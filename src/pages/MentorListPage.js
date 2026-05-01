@@ -2,11 +2,11 @@
 // MentorListPage.js — Browse & filter all mentors
 // ─────────────────────────────────────────────────────────────
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { validateSearchInput, sanitizeInput } from "../utils/validators";
 import { useNavigate } from "react-router-dom";
 import MentorCard from "../components/MentorCard";
-import { mentorsData } from "../data/mentorsData";
+import { fetchMentors } from "../api/mentorApi";
 
 const roles = ["All", "Frontend Developer", "Backend Engineer", "Data Scientist", "AI/ML Researcher", "Full Stack Developer", "DevOps Engineer", "Product Manager", "UI/UX Designer"];
 
@@ -15,18 +15,38 @@ const MentorListPage = () => {
   const [search, setSearch] = useState("");
   const [searchError, setSearchError] = useState("");
   const [selectedRole, setSelectedRole] = useState("All");
-  const [sortBy, setSortBy] = useState("rating"); // 'rating' | 'price_asc' | 'price_desc'
+  const [sortBy, setSortBy] = useState("rating");
 
-  // Filter + Search + Sort
+  // ── API State ──
+  const [mentorsData, setMentorsData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [apiError, setApiError] = useState("");
+
+  // Fetch mentors from the backend API on mount
+  useEffect(() => {
+    const loadMentors = async () => {
+      try {
+        setLoading(true);
+        const data = await fetchMentors();
+        setMentorsData(data.mentors || []);
+      } catch (err) {
+        setApiError("Failed to load mentors. Please try again later.");
+        console.error("[MentorListPage] Error:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadMentors();
+  }, []);
+
+  // Filter + Search + Sort (runs client-side on fetched data)
   const filteredMentors = useMemo(() => {
     let result = [...mentorsData];
 
-    // Filter by role
     if (selectedRole !== "All") {
       result = result.filter((m) => m.role === selectedRole);
     }
 
-    // Search by name, role, skills
     if (search.trim()) {
       const q = search.toLowerCase();
       result = result.filter(
@@ -38,13 +58,12 @@ const MentorListPage = () => {
       );
     }
 
-    // Sort
     if (sortBy === "rating") result.sort((a, b) => b.rating - a.rating);
     else if (sortBy === "price_asc") result.sort((a, b) => a.price - b.price);
     else if (sortBy === "price_desc") result.sort((a, b) => b.price - a.price);
 
     return result;
-  }, [search, selectedRole, sortBy]);
+  }, [search, selectedRole, sortBy, mentorsData]);
 
   return (
 
@@ -109,6 +128,30 @@ const MentorListPage = () => {
         </div>
       </div>
 
+      {/* Loading State */}
+      {loading && (
+        <div style={{ textAlign: "center", padding: "80px 20px" }}>
+          <div style={{ fontSize: "48px", marginBottom: "16px", animation: "pulse 2s ease-in-out infinite" }}>⏳</div>
+          <p style={{ color: "#9CA3AF", fontSize: "16px" }}>Loading mentors from server...</p>
+        </div>
+      )}
+
+      {/* API Error State */}
+      {apiError && !loading && (
+        <div style={{ textAlign: "center", padding: "60px 20px" }}>
+          <div style={{ fontSize: "48px", marginBottom: "16px" }}>⚠️</div>
+          <p style={{ color: "#EF4444", fontSize: "16px", marginBottom: "16px" }}>{apiError}</p>
+          <button
+            onClick={() => window.location.reload()}
+            style={{ padding: "10px 24px", background: "#7C3AED", border: "none", borderRadius: "10px", color: "#fff", cursor: "pointer" }}
+          >
+            Retry
+          </button>
+        </div>
+      )}
+
+      {/* Main content — only show when data is loaded */}
+      {!loading && !apiError && (
       <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "32px 24px" }}>
         {/* Search + Sort */}
         <div style={{ display: "flex", gap: "12px", marginBottom: "20px", flexWrap: "wrap" }}>
@@ -213,6 +256,7 @@ const MentorListPage = () => {
           </div>
         )}
       </div>
+      )}
     </div>
   );
 };

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
-import DB from "../data/db";
+import { loginUser, signupUser } from "../api/authApi";
 import { validateEmail, validatePassword, validateName, validateLoginForm, validateRegistrationForm, normalizeWhitespace } from "../utils/validators";
 import { CatalystIcon } from "../components/Icons";
 import { motion, AnimatePresence } from "framer-motion";
@@ -12,6 +12,7 @@ export default function AuthPage() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [fieldErrors, setFieldErrors] = useState({});
+  const [loading, setLoading] = useState(false); // Loading state for API calls
 
   const handle = (e) => {
     const { name, value } = e.target;
@@ -42,7 +43,7 @@ export default function AuthPage() {
     setForm({ name: "", email: "", password: "" });
   };
 
-  const submit = () => {
+  const submit = async () => {
     setError("");
     setSuccess("");
 
@@ -59,18 +60,13 @@ export default function AuthPage() {
         return setError(firstError);
       }
 
-      // Check if email already exists
-      if (DB.userExists(form.email.trim())) {
-        return setError("This email is already registered. Please sign in instead.");
-      }
-
-      // Sanitize and normalize inputs before storing
       const sanitizedName = normalizeWhitespace(form.name);
       const sanitizedEmail = form.email.trim().toLowerCase();
 
-      // Create user
+      // Call backend signup API
+      setLoading(true);
       try {
-        DB.insertUser(sanitizedName, sanitizedEmail, form.password);
+        await signupUser(sanitizedName, sanitizedEmail, form.password);
         setSuccess("✅ Account created successfully! Redirecting to sign in...");
         
         // Auto-switch to login after 1.5 seconds
@@ -79,7 +75,11 @@ export default function AuthPage() {
           setForm(f => ({ ...f, email: sanitizedEmail, password: "" }));
         }, 1500);
       } catch (err) {
-        setError("Failed to create account. Please try again.");
+        // Extract the error message from the API response
+        const apiMessage = err.response?.data?.error?.message;
+        setError(apiMessage || "Failed to create account. Please try again.");
+      } finally {
+        setLoading(false);
       }
     } else {
       // Validate login form
@@ -93,20 +93,19 @@ export default function AuthPage() {
         return setError(firstError);
       }
 
-      // Attempt login with sanitized email
       const sanitizedEmail = form.email.trim().toLowerCase();
-      const user = DB.loginUser(sanitizedEmail, form.password);
-      
-      if (!user) {
-        return setError("Invalid email or password. Please try again.");
-      }
 
-      // Successful login
+      // Call backend login API
+      setLoading(true);
       try {
+        const { user } = await loginUser(sanitizedEmail, form.password);
         login(user);
         setSuccess("✅ Signed in successfully!");
       } catch (err) {
-        setError("Failed to log in. Please try again.");
+        const apiMessage = err.response?.data?.error?.message;
+        setError(apiMessage || "Invalid email or password. Please try again.");
+      } finally {
+        setLoading(false);
       }
     }
   };
@@ -202,12 +201,16 @@ export default function AuthPage() {
 
         <motion.button 
           onClick={submit} 
-          style={s.submitBtn}
-          whileHover={{ scale: 1.02, y: -2 }}
-          whileTap={{ scale: 0.98 }}
+          style={{ ...s.submitBtn, opacity: loading ? 0.7 : 1, cursor: loading ? "wait" : "pointer" }}
+          whileHover={loading ? {} : { scale: 1.02, y: -2 }}
+          whileTap={loading ? {} : { scale: 0.98 }}
           transition={{ type: "spring", stiffness: 400, damping: 15 }}
+          disabled={loading}
         >
-          {mode === "login" ? "Sign In →" : "Create Account →"}
+          {loading
+            ? "Please wait..."
+            : mode === "login" ? "Sign In →" : "Create Account →"
+          }
         </motion.button>
 
         <p style={s.switchText}>
@@ -225,7 +228,7 @@ export default function AuthPage() {
         </p>
 
         <div style={s.dbBadge}>
-          🗄️ Backed by SQL — users · sessions · progress · planner
+          🔗 Connected to Career Catalyst API Server
         </div>
       </motion.div>
     </div>

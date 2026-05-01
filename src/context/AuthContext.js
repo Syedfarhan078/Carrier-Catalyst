@@ -1,21 +1,34 @@
+/**
+ * ═══════════════════════════════════════════════════════════════
+ * AUTH CONTEXT (Updated for Backend API)
+ * Provides user state and auth actions to the entire app.
+ *
+ * Changes from localStorage version:
+ *   - Now stores auth token alongside user data
+ *   - logout() also clears the auth token
+ *   - getStoredUser() is used for hydration on mount
+ * ═══════════════════════════════════════════════════════════════
+ */
+
 import { createContext, useContext, useState } from "react";
+import { getStoredUser, logoutUser } from "../api/authApi";
 
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(() => {
-    const saved = localStorage.getItem("current_user");
-    return saved ? JSON.parse(saved) : null;
-  });
+  // Hydrate user from localStorage on first mount (persists across refreshes)
+  const [user, setUser] = useState(() => getStoredUser());
 
+  // Called after a successful login or signup API call
   const login = (u) => {
     setUser(u);
     localStorage.setItem("current_user", JSON.stringify(u));
   };
 
+  // Clear all auth state and tokens
   const logout = () => {
     setUser(null);
-    localStorage.removeItem("current_user");
+    logoutUser(); // Clears both token and user from localStorage
   };
 
   return (

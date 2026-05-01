@@ -1,28 +1,64 @@
 import CAREERS from "../data/careers";
-import DB from "../data/db";
 import PageHeader from "../components/PageHeader";
-import { Suspense, lazy } from "react";
+import { Suspense, lazy, useState, useEffect } from "react";
 import "../styles/advancedCareer.css";
 import { TrendingUpIcon, CheckIcon, AwardIcon } from "../components/Icons";
+import { fetchProgress } from "../api/progressApi";
 
 const ProgressBar3D = lazy(() => import("../components/3d/ProgressBar3D"));
 
 export default function ProgressPage({ career, user }) {
   const c = CAREERS[career];
-  const progress     = DB.getProgress(user.id, career);
-  const plannerTasks = DB.getPlanner(user.id, career);
-  const sessionCount = DB.getSessionCount(user.id, career);
 
+  // ── API State ──
+  const [progressData, setProgressData] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch progress from the backend API
+  useEffect(() => {
+    const loadProgress = async () => {
+      try {
+        setLoading(true);
+        const data = await fetchProgress(user.id);
+        setProgressData(data);
+      } catch (err) {
+        console.error("[ProgressPage] Error fetching progress:", err);
+        // Fallback to empty progress
+        setProgressData({ completedTopics: [], streakDays: 0, totalHours: 0 });
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadProgress();
+  }, [user.id, career]);
+
+  // Show loading while fetching from API
+  if (loading || !progressData) {
+    return (
+      <div className="advanced-container">
+        <div className="advanced-wrapper" style={{ textAlign: "center", padding: "80px 20px" }}>
+          <p style={{ color: "rgba(255,255,255,0.5)", fontSize: "1rem", animation: "pulse 2s ease-in-out infinite" }}>
+            ⏳ Loading your progress...
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  // Build progress data from API response
+  const completedTopics = progressData.completedTopics || [];
   const allTopics  = c.roadmap.flatMap((p) => p.steps);
-  const doneTopics = progress.filter((p) => p.completed).length;
+  const doneTopics = completedTopics.length;
   const pct        = allTopics.length ? Math.round((doneTopics / allTopics.length) * 100) : 0;
-  const planDone   = plannerTasks.filter((t) => t.done).length;
+
+  // Build a lookup set for quick "is this topic completed?" checks
+  const completedSet = new Set(completedTopics);
 
   const stats = [
-    { label: "Roadmap Complete", value: `${pct}%`, sub: `${doneTopics} of ${allTopics.length} topics`, color: c.color, icon: "🎯", iconComp: <TrendingUpIcon size={24} color={c.color} /> },
-    { label: "Tasks Completed",  value: planDone,   sub: `of ${plannerTasks.length} planner tasks`,    color: "#22c55e", icon: "✅", iconComp: <CheckIcon size={24} color="#22c55e" /> },
-    { label: "Study Sessions",   value: sessionCount, sub: "visits logged",                              color: "#f59e0b", icon: "📚", iconComp: <AwardIcon size={24} color="#f59e0b" /> },
-    { label: "Current Track",    value: c.icon,      sub: c.label,                                       color: c.accent, icon: "🎓", iconComp: <AwardIcon size={24} color={c.accent} /> },
+    { label: "Roadmap Complete", value: `${pct}%`, sub: `${doneTopics} of ${allTopics.length} topics`, color: c.color, iconComp: <TrendingUpIcon size={24} color={c.color} /> },
+    { label: "Streak Days", value: progressData.streakDays || 0, sub: "consecutive days", color: "#22c55e", iconComp: <CheckIcon size={24} color="#22c55e" /> },
+    { label: "Total Hours",  value: progressData.totalHours || 0, sub: "hours learned", color: "#f59e0b", iconComp: <AwardIcon size={24} color="#f59e0b" /> },
+    { label: "Current Track", value: c.icon, sub: c.label, color: c.accent, iconComp: <AwardIcon size={24} color={c.accent} /> },
   ];
 
   return (
@@ -152,7 +188,7 @@ export default function ProgressPage({ career, user }) {
           <div style={{ display: "grid", gap: "24px" }}>
             {c.roadmap.map((phase, pi) => {
               const done = phase.steps.filter((step) =>
-                progress.find((p) => p.topic === step && p.completed)
+                completedSet.has(step)
               ).length;
               const phasePct = Math.round((done / phase.steps.length) * 100);
               return (
@@ -202,7 +238,7 @@ export default function ProgressPage({ career, user }) {
         </div>
 
         {/* Recent progress rows */}
-        {progress.length > 0 && (
+        {completedTopics.length > 0 && (
           <div style={{
             background: "rgba(255,255,255,0.04)",
             border: "1px solid rgba(99,102,241,0.2)",
@@ -219,7 +255,7 @@ export default function ProgressPage({ career, user }) {
               letterSpacing: "1px",
               color: "rgba(255,255,255,0.8)"
             }}>
-              📋 Recent Achievements
+              📋 Completed Topics
             </h3>
             <div style={{
               display: "grid",
@@ -227,7 +263,7 @@ export default function ProgressPage({ career, user }) {
               maxHeight: "400px",
               overflowY: "auto"
             }}>
-              {progress.slice(-8).reverse().map((row, i) => (
+              {completedTopics.map((topic, i) => (
                 <div
                   key={i}
                   style={{
@@ -235,41 +271,24 @@ export default function ProgressPage({ career, user }) {
                     alignItems: "center",
                     justifyContent: "space-between",
                     padding: "14px 16px",
-                    background: row.completed ? "rgba(34,197,94,0.1)" : "rgba(239,68,68,0.1)",
-                    border: `1px solid ${row.completed ? "rgba(34,197,94,0.2)" : "rgba(239,68,68,0.2)"}`,
+                    background: "rgba(34,197,94,0.1)",
+                    border: "1px solid rgba(34,197,94,0.2)",
                     borderRadius: "10px",
-                    transition: "all var(--transition-fast)"
                   }}
                 >
-                  <span style={{
-                    color: "#fff",
-                    fontSize: "0.95rem",
-                    fontWeight: "500"
-                  }}>
-                    {row.topic}
+                  <span style={{ color: "#fff", fontSize: "0.95rem", fontWeight: "500" }}>
+                    {topic}
                   </span>
-                  <div style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "12px"
+                  <span style={{
+                    color: "#22c55e",
+                    fontSize: "0.9rem",
+                    fontWeight: "700",
+                    padding: "4px 10px",
+                    background: "rgba(34,197,94,0.15)",
+                    borderRadius: "6px"
                   }}>
-                    <span style={{
-                      color: row.completed ? "#22c55e" : "#ef4444",
-                      fontSize: "0.9rem",
-                      fontWeight: "700",
-                      padding: "4px 10px",
-                      background: row.completed ? "rgba(34,197,94,0.15)" : "rgba(239,68,68,0.15)",
-                      borderRadius: "6px"
-                    }}>
-                      {row.completed ? "✓ Done" : "⧖ Pending"}
-                    </span>
-                    <span style={{
-                      color: "rgba(255,255,255,0.4)",
-                      fontSize: "0.8rem"
-                    }}>
-                      {new Date(row.updated_at).toLocaleDateString()}
-                    </span>
-                  </div>
+                    ✓ Done
+                  </span>
                 </div>
               ))}
             </div>

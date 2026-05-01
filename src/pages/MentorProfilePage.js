@@ -2,24 +2,51 @@
 // MentorProfilePage.js — Full mentor profile with booking
 // ─────────────────────────────────────────────────────────────
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { mentorsData } from "../data/mentorsData";
+import { fetchMentorById } from "../api/mentorApi";
 import SlotSelector from "../components/SlotSelector";
 import { getBookedSlots, hasActiveBooking, getBookingForMentor } from "../utils/bookingUtils";
 
 const MentorProfilePage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const mentor = mentorsData.find((m) => m.id === parseInt(id));
 
+  const [mentor, setMentor] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const [selectedSlot, setSelectedSlot] = useState(null);
   const [toast, setToast] = useState("");
 
-  if (!mentor) {
+  // Fetch mentor profile from backend API on mount
+  useEffect(() => {
+    const loadMentor = async () => {
+      try {
+        setLoading(true);
+        const data = await fetchMentorById(id);
+        setMentor(data);
+      } catch (err) {
+        setError("Mentor not found or server unreachable.");
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadMentor();
+  }, [id]);
+
+  // Loading state
+  if (loading) {
     return (
-      <div style={{ textAlign: "center", padding: "80px 20px", color: "#9CA3AF" }}>
-        <h2>Mentor not found</h2>
+      <div style={{ minHeight: "100vh", background: "#0F0A1E", display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <p style={{ color: "#9CA3AF", fontSize: "16px", animation: "pulse 2s ease-in-out infinite" }}>⏳ Loading mentor profile...</p>
+      </div>
+    );
+  }
+
+  if (error || !mentor) {
+    return (
+      <div style={{ textAlign: "center", padding: "80px 20px", color: "#9CA3AF", minHeight: "100vh", background: "#0F0A1E" }}>
+        <h2>{error || "Mentor not found"}</h2>
         <button onClick={() => navigate("/mentors")} style={{ marginTop: "16px", padding: "10px 24px", background: "#7C3AED", border: "none", borderRadius: "10px", color: "#fff", cursor: "pointer" }}>
           Back to Mentors
         </button>
@@ -147,7 +174,7 @@ const MentorProfilePage = () => {
           <div style={{ marginTop: "16px" }}>
             <p style={{ margin: "0 0 10px", fontSize: "12px", color: "#6B7280", textTransform: "uppercase", letterSpacing: "0.5px" }}>Skills</p>
             <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
-              {mentor.skills.map((skill) => (
+              {(mentor.skills || []).map((skill) => (
                 <span key={skill} style={{
                   background: "rgba(124,58,237,0.15)", border: "1px solid rgba(124,58,237,0.3)",
                   color: "#C4B5FD", padding: "5px 14px", borderRadius: "20px", fontSize: "13px", fontWeight: "500",
@@ -198,7 +225,7 @@ const MentorProfilePage = () => {
             }}>
               <h3 style={{ margin: "0 0 20px", fontSize: "16px", fontWeight: "700" }}>⭐ Reviews</h3>
               <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-                {mentor.reviews.map((review, i) => (
+                {(mentor.reviews || []).map((review, i) => (
                   <div key={i} style={{
                     background: "rgba(255,255,255,0.02)", borderRadius: "12px", padding: "16px",
                     border: "1px solid rgba(255,255,255,0.06)",
@@ -225,7 +252,7 @@ const MentorProfilePage = () => {
                 🕐 Availability
               </h4>
               <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-                {mentor.availability.map((slot) => {
+                {(mentor.availability || []).map((slot) => {
                   const booked = bookedSlots.includes(slot);
                   return (
                     <div key={slot} style={{
@@ -271,7 +298,7 @@ const MentorProfilePage = () => {
                     ✅ Unlocked after payment
                   </p>
                   <a
-                    href={`https://wa.me/${mentor.contact.whatsapp}`}
+                    href={`https://wa.me/${mentor.contact?.whatsapp}`}
                     target="_blank" rel="noopener noreferrer"
                     style={{
                       display: "flex", alignItems: "center", gap: "10px",
@@ -283,7 +310,7 @@ const MentorProfilePage = () => {
                     <span>📱</span> WhatsApp
                   </a>
                   <a
-                    href={mentor.contact.zoom}
+                    href={mentor.contact?.zoom}
                     target="_blank" rel="noopener noreferrer"
                     style={{
                       display: "flex", alignItems: "center", gap: "10px",
