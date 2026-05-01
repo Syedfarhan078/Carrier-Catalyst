@@ -41,7 +41,7 @@ const CareerCube3D = ({ careers = [], onSelect, selectedIndex = 0 }) => {
       powerPreference: "low-power",
     });
     renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.setClearColor(0x0a0a14, 0.1);
     // No shadow maps
 
@@ -78,49 +78,113 @@ const CareerCube3D = ({ careers = [], onSelect, selectedIndex = 0 }) => {
     const textures = [];
 
     careers.slice(0, 6).forEach((career, index) => {
-      // ── CREATE CANVAS TEXTURE (reduced to 256×256) ──
+      // ── CREATE CANVAS TEXTURE (Premium 512x512) ──
       const canvas = document.createElement("canvas");
-      canvas.width = 256;
-      canvas.height = 256;
+      canvas.width = 512;
+      canvas.height = 512;
       const ctx = canvas.getContext("2d");
 
-      // Background gradient
-      const gradient = ctx.createLinearGradient(0, 0, 256, 256);
-      gradient.addColorStop(0, "#1a1f3a");
-      gradient.addColorStop(1, "#0f0f1e");
-      ctx.fillStyle = gradient;
-      ctx.fillRect(0, 0, 256, 256);
+      const isSelected = index === selectedIndex;
 
-      // Border
-      ctx.strokeStyle = index === selectedIndex ? "#818cf8" : "#4338ca";
-      ctx.lineWidth = 3;
-      ctx.strokeRect(6, 6, 244, 244);
+      // Deep premium dark background
+      ctx.fillStyle = "#0a0a14";
+      ctx.fillRect(0, 0, 512, 512);
+
+      // Radial glow in the center
+      const radialGlow = ctx.createRadialGradient(256, 256, 0, 256, 256, 256);
+      if (isSelected) {
+        radialGlow.addColorStop(0, "rgba(99, 102, 241, 0.4)");
+        radialGlow.addColorStop(1, "rgba(10, 10, 20, 0)");
+      } else {
+        radialGlow.addColorStop(0, "rgba(255, 255, 255, 0.05)");
+        radialGlow.addColorStop(1, "rgba(10, 10, 20, 0)");
+      }
+      ctx.fillStyle = radialGlow;
+      ctx.fillRect(0, 0, 512, 512);
+
+      // Subtle tech grid pattern
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.03)";
+      ctx.lineWidth = 1;
+      for (let i = 0; i <= 512; i += 32) {
+        ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, 512); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(512, i); ctx.stroke();
+      }
+
+      // Elegant inner border with rounded corners
+      ctx.strokeStyle = isSelected ? "rgba(99, 102, 241, 0.8)" : "rgba(255, 255, 255, 0.15)";
+      ctx.lineWidth = isSelected ? 4 : 2;
+      ctx.beginPath();
+      const r = 24;
+      const x = 16, y = 16, w = 480, h = 480;
+      ctx.moveTo(x + r, y);
+      ctx.lineTo(x + w - r, y);
+      ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+      ctx.lineTo(x + w, y + h - r);
+      ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+      ctx.lineTo(x + r, y + h);
+      ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+      ctx.lineTo(x, y + r);
+      ctx.quadraticCurveTo(x, y, x + r, y);
+      ctx.closePath();
+      ctx.stroke();
+
+      // Top-left small tech text
+      ctx.font = "500 16px 'Inter', system-ui, sans-serif";
+      ctx.textAlign = "left";
+      ctx.fillStyle = isSelected ? "#818cf8" : "rgba(255, 255, 255, 0.4)";
+      ctx.fillText(`SYS.0${index + 1}`, 40, 50);
+
+      // Top-right small tech text
+      ctx.textAlign = "right";
+      ctx.fillText(isSelected ? "ACTIVE" : "STANDBY", 472, 50);
 
       // Icon (emoji or text)
-      ctx.font = "bold 100px Arial";
+      ctx.font = "bold 160px 'Inter', system-ui, sans-serif";
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
-      ctx.fillStyle = "#818cf8";
-      ctx.fillText(career.iconText || "💼", 128, 80);
+      ctx.fillStyle = "#ffffff";
+      
+      // Glowing effect to the icon
+      ctx.shadowColor = isSelected ? "rgba(99, 102, 241, 0.8)" : "transparent";
+      ctx.shadowBlur = isSelected ? 40 : 0;
+      ctx.fillText(career.iconText || "💼", 256, 210);
+      ctx.shadowBlur = 0; // reset shadow
 
       // Label
-      ctx.font = "bold 26px Arial";
-      ctx.fillStyle = "#f1f5f9";
-      const label = career.label.split(" ")[0];
-      ctx.fillText(label, 128, 190);
+      ctx.font = "900 52px 'Inter', system-ui, sans-serif";
+      ctx.fillStyle = isSelected ? "#ffffff" : "rgba(255, 255, 255, 0.9)";
+      const label = career.label.split(" ")[0].toUpperCase();
+      ctx.fillText(label, 256, 380);
+
+      // Subtitle (Adding manual letter spacing via spacing function)
+      ctx.font = "500 20px 'Inter', system-ui, sans-serif";
+      ctx.fillStyle = isSelected ? "rgba(129, 140, 248, 0.9)" : "rgba(255, 255, 255, 0.5)";
+      const subtitle = "CAREER PATH";
+      let startX = 256 - (ctx.measureText(subtitle).width / 2) - ((subtitle.length - 1) * 2);
+      ctx.textAlign = "left";
+      for (let i = 0; i < subtitle.length; i++) {
+        ctx.fillText(subtitle[i], startX, 430);
+        startX += ctx.measureText(subtitle[i]).width + 4; // 4px letter spacing
+      }
 
       const texture = new THREE.CanvasTexture(canvas);
-      texture.generateMipmaps = false;
-      texture.minFilter = THREE.LinearFilter;
+      texture.generateMipmaps = true;
+      texture.minFilter = THREE.LinearMipmapLinearFilter;
+      if (renderer.capabilities.getMaxAnisotropy() > 0) {
+        texture.anisotropy = renderer.capabilities.getMaxAnisotropy();
+      }
       textures.push(texture);
 
       const geometry = new THREE.PlaneGeometry(cubeSize, cubeSize);
-      const material = new THREE.MeshStandardMaterial({
+      const material = new THREE.MeshPhysicalMaterial({
         map: texture,
-        emissive: index === selectedIndex ? 0x6366f1 : 0x000000,
-        emissiveIntensity: index === selectedIndex ? 0.4 : 0,
-        metalness: 0.3,
-        roughness: 0.7,
+        emissive: isSelected ? 0x6366f1 : 0x000000,
+        emissiveIntensity: isSelected ? 0.3 : 0,
+        emissiveMap: texture,
+        metalness: 0.6,
+        roughness: 0.2,
+        clearcoat: 1.0,
+        clearcoatRoughness: 0.1,
       });
 
       const mesh = new THREE.Mesh(geometry, material);
