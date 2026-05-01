@@ -1,16 +1,22 @@
 <div align="center">
+  <img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React" />
+  <img src="https://img.shields.io/badge/Node.js-43853D?style=for-the-badge&logo=node.js&logoColor=white" alt="Node.js" />
+  <img src="https://img.shields.io/badge/Express.js-404D59?style=for-the-badge" alt="Express.js" />
+  <img src="https://img.shields.io/badge/ThreeJs-black?style=for-the-badge&logo=three.js&logoColor=white" alt="Three.js" />
+  
+  <br/><br/>
   <h1>🎯 Career Catalyst</h1>
-  <p><strong>AI-Powered Smart Career Path Recommendation System</strong></p>
-  <p><i>A beautifully designed, performant React application with immersive 3D experiences.</i></p>
+  <p><strong>AI-Powered Smart Career Path & Mentorship Platform</strong></p>
+  <p><i>A beautifully designed, full-stack application featuring immersive 3D experiences, AI resume analysis, and real-time mentor booking.</i></p>
 </div>
 
 ---
 
 ## ✨ Overview
 
-Career Catalyst is an innovative career guidance platform built with React. It provides structured learning roadmaps, curated resources, and an interactive experience to help users navigate their professional journey in domains like **Data Science** and **Web Development**.
+Career Catalyst has evolved from a simple static web page into a **production-ready full-stack SaaS platform**. It provides structured learning roadmaps, AI-driven insights, and a fully functional Mentor Marketplace to help users navigate their professional journey in domains like **Data Science** and **Web Development**.
 
-The application has been recently upgraded from a basic HTML/CSS/JS stack to a modern **React + 3D UI** architecture, featuring local-storage-backed SQL simulation and high-performance immersive WebGL/CSS 3D components.
+Built with a **React + Node.js/Express** architecture, the platform features a custom RESTful API, centralized Axios state management, edge-ready 3D components, and highly polished Framer Motion animations.
 
 ---
 
@@ -18,136 +24,95 @@ The application has been recently upgraded from a basic HTML/CSS/JS stack to a m
 
 | Feature | Description |
 |---|---|
-| 🔐 **Authentication** | Secure register & login system backed by a simulated SQL database using localStorage. |
-| 🧊 **Immersive WebGL UI** | Custom vertex and fragment shaders for atmospheric backgrounds and particles. |
-| 🗺 **Interactive Roadmaps** | Phase-by-phase learning roadmap with progress tracking and checklists. |
-| ✨ **Tactile Physics Interactions** | Framer Motion integration for snappy, spring-based micro-interactions. |
-| 📚 **Curated Courses** | Carefully selected courses complete with difficulty levels, durations, and direct links. |
-| ▶ **YouTube Integration** | Top learning channel recommendations tailored for each career path. |
-| 💼 **Interview Prep** | Expandable interview Q&A accordion categorized by technical skills. |
+| 🔐 **Secure Authentication** | Full backend-driven register & login system with Bearer token session management. |
+| 🧑‍🏫 **Mentor Marketplace** | Browse, filter, and book 1:1 sessions with industry experts. Features dynamic availability & mock payment flows. |
+| 📄 **AI Resume Analyzer** | On-device AI processing via TensorFlow.js to extract skills and recommend career paths without sending data to the cloud. |
+| 🧊 **Immersive WebGL UI** | Custom vertex/fragment shaders and React Three Fiber components for atmospheric 3D backgrounds and interactive elements. |
+| 🗺 **Interactive Roadmaps** | Phase-by-phase learning roadmap with real-time backend progress tracking. |
+| ✨ **Tactile Physics Interactions** | Framer Motion integration for snappy, spring-based micro-interactions and layout transitions. |
 | 📅 **Study Planner** | Interactive weekly task planner with add/complete/delete functionality. |
-| ♿ **Hyper-Accessibility** | Keyboard-first navigation, screen-reader optimized, and reduced-motion support. |
-| 📝 **Smart Assessment** | Career assessment quiz to recommend the best path based on your skills and interests. |
-| ⚡ **Edge-Ready Performance** | Static HTML prerendering, service workers, and visibility-based 3D rendering. |
+| ⚡ **Robust API Layer** | Centralized Axios configuration with global interceptors, automatic 401 handling, and graceful UI fallbacks. |
 
 ---
 
 ## 🛠️ Tech Stack
 
-- **Frontend:** React 18, React Router v6
-- **3D Graphics:** Three.js, React Three Fiber (R3F), CSS 3D Transforms
+### **Frontend**
+- **Core:** React 18, React Router v6
+- **API Client:** Axios (Custom interceptors & token management)
+- **3D Graphics:** Three.js, React Three Fiber (R3F), Drei, CSS 3D Transforms
+- **Animations:** Framer Motion
+- **AI/ML:** TensorFlow.js (In-browser inference)
 - **Styling:** CSS Modules, Modern Vanilla CSS (Dark Theme, Glassmorphism)
-- **Database:** In-memory SQL schema simulated via localStorage
-- **State Management:** React Hooks + Context API
+
+### **Backend**
+- **Core:** Node.js, Express.js
+- **Architecture:** Domain-Driven Design (Controllers, Routes, Middleware, Utils)
+- **Security:** CORS, Custom Error Handlers, Request Validation
+- **Database:** Modular In-Memory Data Store (Ready for PostgreSQL/MongoDB migration)
 
 ---
 
 ## 📂 Project Structure
 
 ```text
-skillpath/
-├── public/
-│   └── index.html
-├── src/
-│   ├── index.js                  ← React entry point
-│   ├── App.js                    ← Root app + routing logic
-│   │
-│   ├── context/
-│   │   └── AuthContext.js        ← Global auth state
-│   │
-│   ├── components/               ← UI Components
-│   │   ├── 3d/                   ← 🧊 New 3D Components
-│   │   │   ├── AnimatedBackground.jsx
-│   │   │   ├── CareerCube3D.jsx
-│   │   │   ├── ParticleText3D.jsx
-│   │   │   ├── ProgressBar3D.jsx
-│   │   │   └── Rotating3DCard.jsx
-│   │   ├── assessment/           ← Assessment UI
-│   │   ├── ui/                   ← Common UI (LoadingSpinner, etc.)
-│   │   ├── CareerLayout.js       ← Sidebar + page switcher
-│   │   └── PageHeader.js         ← Reusable page header
-│   │
-│   ├── pages/                    ← App Views
-│   │   ├── AuthPage.js           ← Login & Register
-│   │   ├── CareerSelectPage.js   ← Modernized career selection
-│   │   ├── RoadmapPage.js        ← Interactive roadmap
-│   │   └── ...                   (Courses, YouTube, Interview, Progress)
-│   │
-│   ├── data/
-│   │   ├── db.js                 ← SQL-style in-memory DB
-│   │   └── careers.js            ← Career data configurations
-│   │
-│   └── styles/
-│       └── global.css            ← Base styles & variables
+skillpath-react/skillpath/
+├── backend/                      ← ⚙️ Node.js / Express API Server
+│   ├── controllers/              # Business logic (auth, mentors, users)
+│   ├── routes/                   # Express router definitions
+│   ├── middleware/               # Error handling & logging
+│   ├── data/                     # In-memory data store
+│   └── server.js                 # Backend entry point (Port 5000)
 │
-├── package.json
-└── README.md
+├── src/                          ← 🎨 React Frontend
+│   ├── api/                      # Axios config & API service layer
+│   ├── components/               # UI Components
+│   │   ├── 3d/                   # R3F WebGL Components
+│   │   └── assessment/           # Assessment UI
+│   ├── context/                  # Global React Context (Auth)
+│   ├── pages/                    # App Views (Auth, MentorList, Booking, etc.)
+│   └── styles/                   # CSS Design System
+│
+└── package.json
 ```
 
 ---
 
-## 🗄️ SQL Database Schema (Simulated)
+## 🔌 API Architecture
 
-```sql
-CREATE TABLE users (
-  id         INTEGER PRIMARY KEY,
-  name       TEXT NOT NULL,
-  email      TEXT UNIQUE NOT NULL,
-  password   TEXT NOT NULL,
-  created_at TEXT
-);
+The frontend seamlessly communicates with the backend via a structured API layer.
 
-CREATE TABLE sessions (
-  id         INTEGER PRIMARY KEY,
-  user_id    INTEGER REFERENCES users(id),
-  career     TEXT,
-  created_at TEXT
-);
+- **Authentication:** `POST /api/auth/signup`, `POST /api/auth/login`
+- **Users:** `GET /api/users`, `GET /api/users/:id`
+- **Mentors:** `GET /api/mentors`, `GET /api/mentors/:id`
+- **Progress:** `GET /api/progress/:userId`, `POST /api/progress`
 
-CREATE TABLE progress (
-  id         INTEGER PRIMARY KEY,
-  user_id    INTEGER REFERENCES users(id),
-  career     TEXT,
-  topic      TEXT,
-  completed  BOOLEAN DEFAULT FALSE,
-  updated_at TEXT
-);
-
-CREATE TABLE planner (
-  id      INTEGER PRIMARY KEY,
-  user_id INTEGER REFERENCES users(id),
-  career  TEXT,
-  day     TEXT,
-  task    TEXT,
-  done    BOOLEAN DEFAULT FALSE
-);
-```
-
----
-
-## 🛤️ Supported Career Paths
-
-1. **🧠 Data Science**
-   - *Topics:* Python, SQL, EDA, Machine Learning, Deep Learning, LLMs, MLOps
-2. **🌐 Web Development**
-   - *Topics:* HTML/CSS, JavaScript, React, Node.js, Databases, DevOps
+*Note: The frontend API layer includes graceful fallbacks, ensuring the application remains interactive even if the backend goes offline.*
 
 ---
 
 ## 🏃 Getting Started
 
+### 1. Clone the repository
 ```bash
-# 1. Clone the repository and navigate to the project directory
 cd skillpath-react/skillpath
+```
 
-# 2. Install dependencies
+### 2. Start the Backend Server
+```bash
+cd backend
 npm install
-
-# 3. Start the development server
 npm start
+# Server runs on http://localhost:5000
+```
 
-# 4. Open your browser
-# Navigate to http://localhost:3000 to see the app in action!
+### 3. Start the Frontend Application
+Open a new terminal window:
+```bash
+# Assuming you are in the skillpath directory
+npm install
+npm start
+# App runs on http://localhost:3000
 ```
 
 ---
