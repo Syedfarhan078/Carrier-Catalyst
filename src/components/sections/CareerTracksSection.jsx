@@ -1,9 +1,9 @@
 import React, { useRef } from "react";
-import { BrainIcon, GlobeIcon } from "../Icons";
+import { BrainIcon, GlobeIcon, LockIcon, SettingsIcon } from "../Icons";
 
 const TRACKS = [
   {
-    id: "data-science",
+    id: "datascience",
     icon: <BrainIcon size={28} color="#9b96ff" />,
     title: "Data Science",
     titleColor: "#9b96ff",
@@ -15,7 +15,7 @@ const TRACKS = [
     ctaText: "Start Learning →",
   },
   {
-    id: "web-development",
+    id: "webdev",
     icon: <GlobeIcon size={28} color="#FF7A18" />,
     title: "Web Development",
     titleColor: "#FF7A18",
@@ -24,6 +24,30 @@ const TRACKS = [
     tags: ["Roadmap", "Courses", "YouTube", "Interview", "Planner", "Progress"],
     ctaClass: "cta-wd",
     hoverClass: "track-wd",
+    ctaText: "Start Learning →",
+  },
+  {
+    id: "cybersecurity",
+    icon: <LockIcon size={28} color="#60A5FA" />,
+    title: "Cybersecurity",
+    titleColor: "#60A5FA",
+    description:
+      "Protect networks, systems, and data from digital attacks as a security expert.",
+    tags: ["Roadmap", "Courses", "YouTube", "Interview", "Planner", "Progress"],
+    ctaClass: "cta-cyber",
+    hoverClass: "track-cyber",
+    ctaText: "Start Learning →",
+  },
+  {
+    id: "devops",
+    icon: <SettingsIcon size={28} color="#34D399" />,
+    title: "Cloud & DevOps",
+    titleColor: "#34D399",
+    description:
+      "Master cloud infrastructure, automation, and CI/CD pipelines to streamline deployment.",
+    tags: ["Roadmap", "Courses", "YouTube", "Interview", "Planner", "Progress"],
+    ctaClass: "cta-devops",
+    hoverClass: "track-devops",
     ctaText: "Start Learning →",
   },
 ];
@@ -98,7 +122,12 @@ const TrackCard = ({ track, onLearn }) => {
   );
 };
 
-const CareerTracksSection = ({ onLearn }) => {
+const CareerTracksSection = ({ navigate, onLearn }) => {
+  const handleLearn = (id) => {
+    if (onLearn) return onLearn(id);
+    if (navigate) return navigate("roadmap", id);
+  };
+
   return (
     <section className="cc-section">
       <div className="cc-section-label">Career Tracks</div>
@@ -108,7 +137,7 @@ const CareerTracksSection = ({ onLearn }) => {
       </p>
       <div className="cc-tracks-grid">
         {TRACKS.map((track) => (
-          <TrackCard key={track.id} track={track} onLearn={onLearn} />
+          <TrackCard key={track.id} track={track} onLearn={handleLearn} />
         ))}
       </div>
     </section>

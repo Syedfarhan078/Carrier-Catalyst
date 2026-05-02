@@ -3,7 +3,7 @@
  * Includes: roadmap phases, courses, YouTube channels, interview Q&A, study plans
  */
 
-import { BrainIcon, GlobeIcon } from "../components/Icons";
+import { BrainIcon, GlobeIcon, LockIcon, SettingsIcon } from "../components/Icons";
 
 const CAREERS = {
   datascience: {
@@ -238,6 +238,196 @@ const CAREERS = {
       { week: "Week 5–8",  focus: "React.js",             tasks: ["Components, props, state, and hooks", "React Router for multi-page navigation", "Build a full CRUD app (Todo / Notes App)"] },
       { week: "Week 9–12", focus: "Node.js + Express",    tasks: ["Build a REST API with Express", "Connect to PostgreSQL with Prisma ORM", "User auth: Register & Login with JWT"] },
       { week: "Week 13–16",focus: "Full Stack + Deploy",  tasks: ["Deploy full stack app to Vercel + Railway", "Add CI/CD pipeline with GitHub Actions", "Polish portfolio with 3 live deployed projects"] },
+    ],
+  },
+
+  cybersecurity: {
+    label: "Cybersecurity",
+    icon: <LockIcon size={32} color="currentColor" />,
+    iconText: "🛡️",
+    color: "#3B82F6",
+    accent: "#60A5FA",
+    description: "Protect networks, systems, and data from digital attacks as a security expert.",
+
+    roadmap: [
+      {
+        phase: "Fundamentals",
+        steps: [
+          "Networking Basics (TCP/IP, OSI)",
+          "Operating Systems (Linux, Windows)",
+          "Scripting (Python, Bash)",
+          "Security Concepts (CIA Triad)",
+        ],
+      },
+      {
+        phase: "Defense & Defense",
+        steps: [
+          "Network Security & Firewalls",
+          "Identity & Access Management (IAM)",
+          "Cryptography",
+          "Endpoint Protection",
+        ],
+      },
+      {
+        phase: "Offensive Security",
+        steps: [
+          "Vulnerability Assessment",
+          "Penetration Testing",
+          "Web Application Security",
+          "Social Engineering",
+        ],
+      },
+      {
+        phase: "Advanced & Certs",
+        steps: [
+          "Incident Response",
+          "Security Operations (SOC)",
+          "CompTIA Security+",
+          "CEH / CISSP Preparation",
+        ],
+      },
+    ],
+
+    courses: [
+      { title: "Google Cybersecurity Professional Certificate", provider: "Coursera", link: "https://www.coursera.org/professional-certificates/google-cybersecurity", duration: "120 hrs", level: "Beginner" },
+      { title: "IBM Cybersecurity Analyst", provider: "Coursera", link: "https://www.coursera.org/professional-certificates/ibm-cybersecurity-analyst", duration: "60 hrs", level: "Beginner" },
+      { title: "CompTIA Security+ (SY0-601)", provider: "Udemy", link: "https://www.udemy.com/course/securityplus/", duration: "25 hrs", level: "Intermediate" },
+      { title: "Practical Ethical Hacking", provider: "TCM Security", link: "https://academy.tcm-sec.com/p/practical-ethical-hacking-the-complete-course", duration: "25 hrs", level: "Intermediate" },
+      { title: "Web Security Academy", provider: "PortSwigger", link: "https://portswigger.net/web-security", duration: "Self-paced", level: "Advanced" },
+    ],
+
+    youtube: [
+      { channel: "NetworkChuck", topic: "Networking & Security", link: "https://www.youtube.com/@NetworkChuck", subs: "3.5M" },
+      { channel: "David Bombal", topic: "Cybersecurity & Cisco", link: "https://www.youtube.com/@davidbombal", subs: "2M" },
+      { channel: "John Hammond", topic: "CTF & Malware Analysis", link: "https://www.youtube.com/@_JohnHammond", subs: "1M" },
+      { channel: "HackerSploit", topic: "Ethical Hacking & Pen Testing", link: "https://www.youtube.com/@HackerSploit", subs: "800K" },
+    ],
+
+    interview: [
+      {
+        category: "Networking & OS",
+        questions: [
+          "What is the OSI model? Explain each layer briefly.",
+          "Difference between TCP and UDP?",
+          "How does DNS work?",
+          "What are the differences between symmetric and asymmetric encryption?",
+        ],
+      },
+      {
+        category: "Security Concepts",
+        questions: [
+          "What is the CIA triad?",
+          "Explain Cross-Site Scripting (XSS) and how to prevent it.",
+          "What is SQL Injection?",
+          "How do you secure a web server?",
+        ],
+      },
+    ],
+
+    plan: [
+      { week: "Week 1–2",  focus: "Networking & OS", tasks: ["Learn OSI Model, TCP/IP, DNS, HTTP", "Set up a Linux VM and learn basic bash commands", "Understand subnetting and routing"] },
+      { week: "Week 3–4",  focus: "Security Fundamentals", tasks: ["Study the CIA triad and access controls", "Learn basic cryptography concepts", "Complete rooms on TryHackMe (Beginner path)"] },
+      { week: "Week 5–8",  focus: "Offensive Basics", tasks: ["Use Nmap for network scanning", "Learn Burp Suite for web vulnerability scanning", "Practice OWASP Top 10 vulnerabilities"] },
+      { week: "Week 9–12", focus: "Defense & SIEM", tasks: ["Configure a firewall (ufw/iptables)", "Set up and monitor Splunk or ELK stack", "Analyze sample PCAP files with Wireshark"] },
+      { week: "Week 13–16",focus: "Certification Prep", tasks: ["Take Security+ practice exams", "Build a home lab and document your process", "Participate in beginner CTFs (Capture The Flag)"] },
+    ],
+  },
+
+  devops: {
+    label: "Cloud & DevOps",
+    icon: <SettingsIcon size={32} color="currentColor" />,
+    iconText: "⚙️",
+    color: "#10B981",
+    accent: "#34D399",
+    description: "Master cloud infrastructure, automation, and CI/CD pipelines to streamline deployment.",
+
+    roadmap: [
+      {
+        phase: "Prerequisites",
+        steps: [
+          "Linux & Terminal Mastery",
+          "Networking Protocols",
+          "Scripting (Bash/Python)",
+          "Git Version Control",
+        ],
+      },
+      {
+        phase: "Containers & CI/CD",
+        steps: [
+          "Docker & Containerization",
+          "GitHub Actions / GitLab CI",
+          "Jenkins",
+          "Artifact Management",
+        ],
+      },
+      {
+        phase: "Cloud Providers",
+        steps: [
+          "AWS / Azure / GCP Basics",
+          "IAM & Security",
+          "Compute & Storage",
+          "Serverless Architectures",
+        ],
+      },
+      {
+        phase: "Infrastructure & Orch.",
+        steps: [
+          "Terraform (IaC)",
+          "Kubernetes (K8s)",
+          "Ansible (Configuration Mgmt)",
+          "Monitoring (Prometheus/Grafana)",
+        ],
+      },
+    ],
+
+    courses: [
+      { title: "DevOps Bootcamp", provider: "Udemy", link: "https://www.udemy.com/course/decodingdevops/", duration: "45 hrs", level: "Beginner-Adv" },
+      { title: "Docker Mastery", provider: "Udemy", link: "https://www.udemy.com/course/docker-mastery/", duration: "20 hrs", level: "Beginner" },
+      { title: "AWS Certified Solutions Architect", provider: "Udemy (Stephane Maarek)", link: "https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/", duration: "27 hrs", level: "Intermediate" },
+      { title: "Kubernetes for Developers", provider: "Pluralsight", link: "https://www.pluralsight.com/courses/kubernetes-getting-started", duration: "4 hrs", level: "Intermediate" },
+      { title: "Terraform for AWS", provider: "FreeCodeCamp", link: "https://www.youtube.com/watch?v=7xngnjfIlK4", duration: "13 hrs", level: "Beginner" },
+    ],
+
+    youtube: [
+      { channel: "TechWorld with Nana", topic: "DevOps & Kubernetes", link: "https://www.youtube.com/@TechWorldwithNana", subs: "850K" },
+      { channel: "KodeKloud", topic: "DevOps Training", link: "https://www.youtube.com/@KodeKloud", subs: "150K" },
+      { channel: "Gaurav Sharma", topic: "Cloud & DevOps Projects", link: "https://www.youtube.com/@GauravSharmaDevOps", subs: "100K" },
+      { channel: "Christian Lempa", topic: "Home Lab & Linux", link: "https://www.youtube.com/@christianlempa", subs: "250K" },
+    ],
+
+    interview: [
+      {
+        category: "Linux & Git",
+        questions: [
+          "How do you check system performance in Linux?",
+          "Explain the difference between git merge and git rebase.",
+          "How would you securely store secrets in version control?",
+        ],
+      },
+      {
+        category: "Containers & CI/CD",
+        questions: [
+          "What is the difference between a virtual machine and a container?",
+          "Explain a CI/CD pipeline and its benefits.",
+          "How do you persist data in Docker?",
+        ],
+      },
+      {
+        category: "Cloud & IaC",
+        questions: [
+          "What is Infrastructure as Code (IaC)?",
+          "Explain Terraform state and why it's important.",
+          "Differences between AWS S3 and EBS?",
+        ],
+      },
+    ],
+
+    plan: [
+      { week: "Week 1–2",  focus: "Linux & Scripting", tasks: ["Master Linux CLI (navigation, permissions, processes)", "Write 5 bash scripts for automation", "Learn Git branching and merging"] },
+      { week: "Week 3–4",  focus: "Containers", tasks: ["Learn Docker architecture and Dockerfiles", "Containerize a Node.js or Python application", "Use Docker Compose for multi-container apps"] },
+      { week: "Week 5–8",  focus: "CI/CD & Cloud", tasks: ["Set up a GitHub Actions pipeline", "Deploy a web app to AWS EC2", "Learn AWS IAM, S3, and VPC basics"] },
+      { week: "Week 9–12", focus: "IaC & Config", tasks: ["Provision AWS infrastructure using Terraform", "Configure servers automatically using Ansible", "Deploy a 3-tier architecture with IaC"] },
+      { week: "Week 13–16",focus: "Kubernetes & Monitoring", tasks: ["Set up a local Minikube cluster", "Deploy your containerized app to K8s", "Add basic monitoring with Prometheus and Grafana"] },
     ],
   },
 };

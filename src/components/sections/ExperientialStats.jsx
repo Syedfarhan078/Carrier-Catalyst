@@ -20,10 +20,10 @@ const StatItem = ({ value, suffix, label, color, delay }) => {
 };
 
 const STATS = [
-  { value: "2", label: "Career Tracks", color: "purple" },
-  { value: "30", suffix: "+", label: "Curated Courses", color: "white" },
-  { value: "100", suffix: "+", label: "Interview Q&As", color: "orange" },
-  { value: "5", suffix: "+", label: "Study Schedules", color: "white" },
+  { value: "4", label: "Career Tracks", color: "purple" },
+  { value: "50", suffix: "+", label: "Curated Courses", color: "white" },
+  { value: "150", suffix: "+", label: "Interview Q&As", color: "orange" },
+  { value: "20", suffix: "+", label: "Study Schedules", color: "white" },
 ];
 
 const ExperientialStats = () => {
