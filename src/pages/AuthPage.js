@@ -4,6 +4,7 @@ import { loginUser, signupUser } from "../api/authApi";
 import { validateEmail, validatePassword, validateName, validateLoginForm, validateRegistrationForm, normalizeWhitespace } from "../utils/validators";
 import { CatalystIcon } from "../components/Icons";
 import { motion, AnimatePresence } from "framer-motion";
+import "../styles/AuthPage.css";
 
 export default function AuthPage() {
   const { login } = useAuth();
@@ -12,13 +13,12 @@ export default function AuthPage() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [fieldErrors, setFieldErrors] = useState({});
-  const [loading, setLoading] = useState(false); // Loading state for API calls
+  const [loading, setLoading] = useState(false);
 
   const handle = (e) => {
     const { name, value } = e.target;
     setForm({ ...form, [name]: value });
     
-    // Real-time validation feedback
     let fieldError = "";
     if (value.trim()) {
       if (name === "name" && mode === "register") {
@@ -41,6 +41,7 @@ export default function AuthPage() {
     setError("");
     setSuccess("");
     setForm({ name: "", email: "", password: "" });
+    setFieldErrors({});
   };
 
   const submit = async () => {
@@ -48,7 +49,6 @@ export default function AuthPage() {
     setSuccess("");
 
     if (mode === "register") {
-      // Validate registration form
       const validation = validateRegistrationForm({
         name: form.name,
         email: form.email,
@@ -63,26 +63,22 @@ export default function AuthPage() {
       const sanitizedName = normalizeWhitespace(form.name);
       const sanitizedEmail = form.email.trim().toLowerCase();
 
-      // Call backend signup API
       setLoading(true);
       try {
         await signupUser(sanitizedName, sanitizedEmail, form.password);
         setSuccess("✅ Account created successfully! Redirecting to sign in...");
         
-        // Auto-switch to login after 1.5 seconds
         setTimeout(() => {
           switchMode("login");
           setForm(f => ({ ...f, email: sanitizedEmail, password: "" }));
         }, 1500);
       } catch (err) {
-        // Extract the error message from the API response or network error
         const apiMessage = err.displayMessage || err.response?.data?.error?.message;
         setError(apiMessage || "Failed to create account. Please try again.");
       } finally {
         setLoading(false);
       }
     } else {
-      // Validate login form
       const validation = validateLoginForm({
         email: form.email,
         password: form.password,
@@ -95,7 +91,6 @@ export default function AuthPage() {
 
       const sanitizedEmail = form.email.trim().toLowerCase();
 
-      // Call backend login API
       setLoading(true);
       try {
         const { user } = await loginUser(sanitizedEmail, form.password);
@@ -111,112 +106,108 @@ export default function AuthPage() {
   };
 
   return (
-    <div style={s.bg}>
+    <div className="auth-page-container">
       <motion.div 
-        style={s.card}
+        className="auth-card"
         initial={{ opacity: 0, y: 30, scale: 0.95 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ type: "spring", stiffness: 300, damping: 25 }}
       >
         {/* Brand */}
-        <div style={s.brand}>
-          <CatalystIcon size={44} color="#6C63FF" />
-          <div>
-            <h1 style={s.brandName}>Career Catalyst</h1>
-            <p style={s.brandTagline}>AI-Powered Career Compass</p>
+        <div className="auth-brand">
+          <CatalystIcon size={44} color="#6366f1" />
+          <div className="auth-brand-text">
+            <h1>Career Catalyst</h1>
+            <p>AI-Powered Career Compass</p>
           </div>
         </div>
 
         {/* Tabs */}
-        <div style={s.tabs}>
+        <div className="auth-tabs">
           {["login", "register"].map((m) => (
-            <motion.button
+            <button
               key={m}
               onClick={() => switchMode(m)}
-              style={{ ...s.tab, ...(mode === m ? s.tabActive : {}) }}
-              whileHover={{ backgroundColor: mode === m ? "#6C63FF22" : "rgba(255,255,255,0.05)" }}
-              whileTap={{ scale: 0.97 }}
+              className={`auth-tab ${mode === m ? "active" : ""}`}
             >
               {m === "login" ? "Sign In" : "Sign Up"}
-            </motion.button>
+            </button>
           ))}
         </div>
 
         {/* Form */}
-        {mode === "register" && (
-          <div>
-            <input
-              name="name"
-              placeholder="Full Name"
-              aria-label="Full Name"
-              value={form.name}
-              onChange={handle}
-              style={{
-                ...s.input,
-                ...(fieldErrors.name ? { borderColor: '#ef4444', background: '#ef444411' } : {})
-              }}
-            />
-            {fieldErrors.name && <div style={s.fieldHint}>{fieldErrors.name}</div>}
-          </div>
-        )}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={mode}
+            initial={{ opacity: 0, x: mode === 'login' ? -20 : 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: mode === 'login' ? 20 : -20 }}
+            transition={{ duration: 0.2 }}
+          >
+            {mode === "register" && (
+              <div className="auth-input-group">
+                <input
+                  name="name"
+                  placeholder="Full Name"
+                  aria-label="Full Name"
+                  value={form.name}
+                  onChange={handle}
+                  className={`auth-input ${fieldErrors.name ? 'error' : ''}`}
+                />
+                {fieldErrors.name && <div className="auth-field-hint">{fieldErrors.name}</div>}
+              </div>
+            )}
 
-        <div>
-          <input
-            name="email"
-            type="email"
-            placeholder="Email Address"
-            aria-label="Email Address"
-            value={form.email}
-            onChange={handle}
-            style={{
-              ...s.input,
-              ...(fieldErrors.email ? { borderColor: '#ef4444', background: '#ef444411' } : {})
-            }}
-          />
-          {fieldErrors.email && <div style={s.fieldHint}>{fieldErrors.email}</div>}
-        </div>
+            <div className="auth-input-group">
+              <input
+                name="email"
+                type="email"
+                placeholder="Email Address"
+                aria-label="Email Address"
+                value={form.email}
+                onChange={handle}
+                className={`auth-input ${fieldErrors.email ? 'error' : ''}`}
+              />
+              {fieldErrors.email && <div className="auth-field-hint">{fieldErrors.email}</div>}
+            </div>
 
-        <div>
-          <input
-            name="password"
-            type="password"
-            placeholder="Password"
-            aria-label="Password"
-            value={form.password}
-            onChange={handle}
-            style={{
-              ...s.input,
-              ...(fieldErrors.password ? { borderColor: '#ef4444', background: '#ef444411' } : {})
-            }}
-            onKeyDown={(e) => e.key === "Enter" && submit()}
-          />
-          {fieldErrors.password && <div style={s.fieldHint}>{fieldErrors.password}</div>}
-          {mode === "register" && form.password && !fieldErrors.password && (
-            <div style={s.fieldHintSuccess}>✓ Password is valid</div>
-          )}
-        </div>
+            <div className="auth-input-group">
+              <input
+                name="password"
+                type="password"
+                placeholder="Password"
+                aria-label="Password"
+                value={form.password}
+                onChange={handle}
+                className={`auth-input ${fieldErrors.password ? 'error' : ''}`}
+                onKeyDown={(e) => e.key === "Enter" && submit()}
+              />
+              {fieldErrors.password && <div className="auth-field-hint">{fieldErrors.password}</div>}
+              {mode === "register" && form.password && !fieldErrors.password && (
+                <div className="auth-field-hint success">✓ Password is valid</div>
+              )}
+            </div>
+          </motion.div>
+        </AnimatePresence>
 
-        {error   && <div style={s.errorBox}>{error}</div>}
-        {success && <div style={s.successBox}>{success}</div>}
+        {error   && <div className="auth-message error">{error}</div>}
+        {success && <div className="auth-message success">{success}</div>}
 
-        <motion.button 
+        <button 
+          className="auth-submit-btn"
           onClick={submit} 
-          style={{ ...s.submitBtn, opacity: loading ? 0.7 : 1, cursor: loading ? "wait" : "pointer" }}
-          whileHover={loading ? {} : { scale: 1.02, y: -2 }}
-          whileTap={loading ? {} : { scale: 0.98 }}
-          transition={{ type: "spring", stiffness: 400, damping: 15 }}
           disabled={loading}
         >
           {loading
             ? "Please wait..."
             : mode === "login" ? "Sign In →" : "Create Account →"
           }
-        </motion.button>
+        </button>
 
-        <p style={s.switchText}>
+        <p className="auth-switch-text">
           {mode === "login" ? "Don't have an account?" : "Already have an account?"}{" "}
           <span
-            style={s.switchLink}
+            className="auth-switch-link"
             role="button"
             tabIndex={0}
             onKeyDown={(e) => { if(e.key === 'Enter' || e.key === ' ') switchMode(mode === "login" ? "register" : "login") }}
@@ -227,141 +218,12 @@ export default function AuthPage() {
           </span>
         </p>
 
-        <div style={{ 
-          ...s.dbBadge, 
-          color: error?.includes("Cannot connect") ? "#ef4444" : "#666",
-          borderColor: error?.includes("Cannot connect") ? "#ef444455" : "#1e1e3a"
-        }}>
+        <div className={`auth-db-badge ${error?.includes("Cannot connect") ? 'error' : ''}`}>
           {error?.includes("Cannot connect") 
             ? "⚠️ API Server is Offline" 
-            : "🔗 Connected to Career Catalyst API Server"}
+            : "🔗 Connected to API Server"}
         </div>
       </motion.div>
     </div>
   );
 }
-
-const s = {
-  bg: {
-    minHeight: "100vh",
-    background: "linear-gradient(135deg, #0f0f1a 0%, #1a0a2e 50%, #0a0a14 100%)",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 20,
-  },
-  card: {
-    background: "#12121f",
-    border: "1px solid #1e1e3a",
-    borderRadius: 24,
-    padding: "44px 40px",
-    width: "100%",
-    maxWidth: 420,
-    boxShadow: "0 40px 80px rgba(0,0,0,0.6)",
-  },
-  brand: {
-    display: "flex",
-    alignItems: "center",
-    gap: 14,
-    justifyContent: "center",
-    marginBottom: 28,
-  },
-  brandName: { fontSize: 30, fontWeight: 800, color: "#6C63FF", margin: 0, letterSpacing: '-0.03em' },
-  brandTagline: { color: "#666", fontSize: 13, margin: 0 },
-  tabs: {
-    display: "flex",
-    borderRadius: 12,
-    overflow: "hidden",
-    border: "1px solid #1e1e3a",
-    marginBottom: 24,
-  },
-  tab: {
-    flex: 1,
-    padding: "11px 0",
-    background: "transparent",
-    border: "none",
-    color: "#666",
-    cursor: "pointer",
-    fontSize: 14,
-    fontWeight: 600,
-    transition: "all 0.2s",
-  },
-  tabActive: { background: "#6C63FF22", color: "#6C63FF" },
-  input: {
-    width: "100%",
-    padding: "13px 16px",
-    marginBottom: 12,
-    background: "#0a0a14",
-    border: "1px solid #1e1e3a",
-    borderRadius: 12,
-    color: "#fff",
-    fontSize: 14,
-    outline: "none",
-    display: "block",
-  },
-  errorBox: {
-    background: "#ef444422",
-    border: "1px solid #ef4444",
-    borderRadius: 10,
-    padding: "10px 14px",
-    color: "#ef4444",
-    fontSize: 13,
-    marginBottom: 12,
-  },
-  successBox: {
-    background: "#22c55e22",
-    border: "1px solid #22c55e",
-    borderRadius: 10,
-    padding: "10px 14px",
-    color: "#22c55e",
-    fontSize: 13,
-    marginBottom: 12,
-  },
-  submitBtn: {
-    width: "100%",
-    padding: "13px 24px",
-    background: "linear-gradient(135deg, #6C63FF, #8b5cf6)",
-    color: "#fff",
-    border: "none",
-    borderRadius: 12,
-    fontSize: 15,
-    fontWeight: 600,
-    letterSpacing: '-0.01em',
-    cursor: "pointer",
-    marginTop: 4,
-  },
-  switchText: {
-    textAlign: "center",
-    color: "#555",
-    fontSize: 13,
-    marginTop: 18,
-  },
-  switchLink: { color: "#6C63FF", cursor: "pointer", textDecoration: "underline" },
-  dbBadge: {
-    marginTop: 24,
-    padding: "8px 14px",
-    background: "#0a0a14",
-    borderRadius: 8,
-    color: "#333",
-    fontSize: 11,
-    textAlign: "center",
-    border: "1px solid #1a1a2e",
-  },
-  fieldHint: {
-    color: "#ef4444",
-    fontSize: 12,
-    marginTop: -8,
-    marginBottom: 12,
-    paddingLeft: 4,
-    display: "flex",
-    alignItems: "center",
-    gap: 4,
-  },
-  fieldHintSuccess: {
-    color: "#22c55e",
-    fontSize: 12,
-    marginTop: -8,
-    marginBottom: 12,
-    paddingLeft: 4,
-  },
-};
