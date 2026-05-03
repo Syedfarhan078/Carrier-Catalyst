@@ -10,6 +10,21 @@ const Navbar = ({ username = "User", onLogout }) => {
 
       <div className="cc-nav-right">
         <Link 
+          to="/trends"
+          className="cc-nav-link"
+          style={{ 
+            animation: "fadeIn 0.3s ease-out 0.15s both",
+            textDecoration: "none",
+            color: "#a5b4fc",
+            marginRight: "16px",
+            fontWeight: "500",
+            cursor: "pointer"
+          }}
+        >
+          Market Trends
+        </Link>
+        
+        <Link 
           to="/profile"
           className="cc-nav-user"
           style={{ 

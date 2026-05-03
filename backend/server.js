@@ -39,6 +39,7 @@ const authRoutes = require("./routes/authRoutes");
 const userRoutes = require("./routes/userRoutes");
 const mentorRoutes = require("./routes/mentorRoutes");
 const progressRoutes = require("./routes/progressRoutes");
+const trendsRoutes = require("./routes/trendsRoutes");
 
 // ──────────────────────────────────────────────────────────────
 // 2. CREATE EXPRESS APP
@@ -78,6 +79,7 @@ app.use("/api/auth", authRoutes);         // POST /api/auth/signup, POST /api/au
 app.use("/api/users", userRoutes);        // GET  /api/users, GET /api/users/:id
 app.use("/api/mentors", mentorRoutes);    // GET  /api/mentors, GET /api/mentors/:id
 app.use("/api/progress", progressRoutes); // GET  /api/progress/:userId, POST /api/progress
+app.use("/api/trends", trendsRoutes);     // GET  /api/trends
 
 // ──────────────────────────────────────────────────────────────
 // 5. HEALTH CHECK & API INFO

@@ -18,6 +18,7 @@ const BookingPage = lazy(() => import("./pages/BookingPage"));
 const CoursesPage = lazy(() => import("./pages/CoursesPage"));
 const RoadmapPage = lazy(() => import("./pages/RoadmapPage"));
 const ProfilePage = lazy(() => import("./pages/ProfilePage"));
+const TrendsPage = lazy(() => import("./pages/TrendsPage"));
 
 // ──── Lazy-loaded Components ────
 const CareerLayout = lazy(() => import("./components/CareerLayout"));
@@ -139,6 +140,12 @@ useEffect(() => {
       <Route path="/select-career" element={
         <Suspense fallback={<LoadingSpinner />}>
           <CareerSelectPage />
+        </Suspense>
+      } />
+
+      <Route path="/trends" element={
+        <Suspense fallback={<LoadingSpinner />}>
+          <TrendsPage />
         </Suspense>
       } />
       </Routes>
