@@ -17,6 +17,7 @@ const MentorProfilePage = lazy(() => import("./pages/MentorProfilePage"));
 const BookingPage = lazy(() => import("./pages/BookingPage"));
 const CoursesPage = lazy(() => import("./pages/CoursesPage"));
 const RoadmapPage = lazy(() => import("./pages/RoadmapPage"));
+const ProfilePage = lazy(() => import("./pages/ProfilePage"));
 
 // ──── Lazy-loaded Components ────
 const CareerLayout = lazy(() => import("./components/CareerLayout"));
@@ -126,6 +127,12 @@ useEffect(() => {
       <Route path="/roadmap" element={
         <Suspense fallback={<LoadingSpinner />}>
           <RoadmapPage />
+        </Suspense>
+      } />
+
+      <Route path="/profile" element={
+        <Suspense fallback={<LoadingSpinner />}>
+          <ProfilePage />
         </Suspense>
       } />
 

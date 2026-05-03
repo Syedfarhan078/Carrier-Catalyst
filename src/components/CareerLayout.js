@@ -1,5 +1,6 @@
 import CAREERS from "../data/careers";
 import { lazy, Suspense } from "react";
+import { Link } from "react-router-dom";
 import LoadingSpinner from "./ui/LoadingSpinner";
 
 // ──── Lazy-loaded Career Pages (Code Splitting) ────
@@ -91,12 +92,21 @@ export default function CareerLayout({ career, page, navigate, user, onLogout })
 
         {/* Footer */}
         <div className="sidebar-footer">
-          <span
+          <Link
+            to="/profile"
             className="sidebar-user"
-            style={{ animation: "fadeIn 0.3s ease-out 0.4s both", display: "flex", alignItems: "center", gap: "8px" }}
+            style={{ 
+              animation: "fadeIn 0.3s ease-out 0.4s both", 
+              display: "flex", 
+              alignItems: "center", 
+              gap: "8px",
+              textDecoration: "none",
+              color: "inherit",
+              cursor: "pointer"
+            }}
           >
             <UserIcon size={16} /> {user.name}
-          </span>
+          </Link>
           <button
             onClick={onLogout}
             className="sidebar-logout"

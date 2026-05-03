@@ -1,4 +1,4 @@
-import React from "react";
+import { Link } from "react-router-dom";
 
 const Navbar = ({ username = "User", onLogout }) => {
   return (
@@ -9,12 +9,18 @@ const Navbar = ({ username = "User", onLogout }) => {
       </div>
 
       <div className="cc-nav-right">
-        <span
+        <Link 
+          to="/profile"
           className="cc-nav-user"
-          style={{ animation: "fadeIn 0.3s ease-out 0.2s both" }}
+          style={{ 
+            animation: "fadeIn 0.3s ease-out 0.2s both",
+            textDecoration: "none",
+            color: "inherit",
+            cursor: "pointer"
+          }}
         >
           Welcome, {username}
-        </span>
+        </Link>
 
         <button
           className="cc-nav-btn"
