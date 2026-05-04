@@ -122,4 +122,5 @@ npm start
 
 <div align="center">
   <p>Built with ❤️ for a better learning experience.</p>
+  <p> SYED FARHAN AHMED </p>
 </div>
